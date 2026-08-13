@@ -50,10 +50,15 @@ for root in roots:
         if name not in chosen:
             chosen[name] = skill_md.parent
 
+# Upsert: overwrite names found locally, delete only superseded
+# names, leave dest-only vendored skills (Expo, Emil, Callstack, SM)
+# in place. A wipe-then-copy would drop those.
 if dest.exists():
-    for child in list(dest.iterdir()):
+    for name in superseded:
+        child = dest / name
         if child.is_dir():
             shutil.rmtree(child)
+            print(f"- {name} (superseded)")
 
 copied = 0
 skipped = 0
@@ -74,6 +79,8 @@ for name, src in sorted(chosen.items()):
         continue
 
     out = dest / name
+    if out.exists():
+        shutil.rmtree(out)
     shutil.copytree(
         src,
         out,

@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 .skills/
+.vendor-src/
 node_modules/
 .agents/
 .claude/
