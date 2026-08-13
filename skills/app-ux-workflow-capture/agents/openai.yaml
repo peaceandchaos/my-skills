@@ -1,0 +1,4 @@
+interface:
+  display_name: "App UX Workflow Capture"
+  short_description: "Extract app walkthrough screens"
+  default_prompt: "Use $app-ux-workflow-capture to extract chronological app screens from this walkthrough video."

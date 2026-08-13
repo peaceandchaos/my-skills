@@ -1,0 +1,4 @@
+interface:
+  display_name: "Figma Review Skill"
+  short_description: "Capture a Figma screen and hand it off with context."
+  default_prompt: "Capture the current Figma screen and create a self-contained design handoff task."
