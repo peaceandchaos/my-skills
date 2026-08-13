@@ -68,15 +68,15 @@ skills/<name>/SKILL.md   # what `npx skills add` installs
 
 Optional `scripts/`, `references/`, and `assets/` live next to each `SKILL.md`.
 
-## What’s in here (63)
+## What’s in here (59)
 
-Copied from `~/.cursor/plugins/local/personal-skills`, `~/.agents/skills`, `~/.cursor/skills`, `~/.claude/skills`, and `~/.codex/skills`. First match wins in that order.
+Copied from live `~/.agents/skills` first, then `~/.cursor/skills`, `~/.claude/skills`, `~/.codex/skills`, then unique extras from the local plugin pack.
 
 **Engineering** — `code-review`, `codebase-design`, `diagnosing-bugs`, `domain-modeling`, `implement`, `improve-codebase-architecture`, `migrate-to-shoehorn`, `prototype`, `react-doctor`, `resolving-merge-conflicts`, `setup-pre-commit`, `setup-ts-deep-modules`, `tdd`, `thermo-nuclear-code-quality-review`, `supabase-postgres-best-practices`
 
-**Planning** — `ask-matt`, `decision-mapping`, `grill-me`, `grill-with-docs`, `grilling`, `handoff`, `claude-handoff`, `loop-me`, `orchestrate`, `research`, `setup-matt-pocock-skills`, `teach`, `to-issues`, `to-prd`, `to-questionnaire`, `to-spec`, `to-tickets`, `triage`, `wait-what`, `wayfinder`, `wizard`, `sync-cloud-skills`, `find-skills`
+**Planning** — `ask-matt`, `grill-me`, `grill-with-docs`, `grilling`, `handoff`, `claude-handoff`, `loop-me`, `orchestrate`, `research`, `setup-matt-pocock-skills`, `teach`, `to-questionnaire`, `to-spec`, `to-tickets`, `triage`, `wait-what`, `wayfinder`, `wizard`, `sync-cloud-skills`, `find-skills`
 
-**Writing** — `edit-article`, `obsidian-vault`, `writing-beats`, `writing-for-agents`, `writing-fragments`, `writing-great-skills`, `writing-shape`
+**Writing** — `edit-article`, `obsidian-vault`, `writing-beats`, `writing-for-agents`, `writing-fragments`, `writing-shape`
 
 **Mobile / Expo** — `app-ux-workflow-capture`, `expo-ios-hig`, `expo-ui`, `mobile-touch`, `react-native-design`
 
@@ -88,10 +88,14 @@ Copied from `~/.cursor/plugins/local/personal-skills`, `~/.agents/skills`, `~/.c
 
 | Source | Why |
 | --- | --- |
-| Cursor built-ins (`~/.cursor/skills-cursor`) | Already on every Cursor install (`create-skill`, `canvas`, …) |
-| Marketplace plugins (Figma, pstack, Claude/Codex bundled) | Installed by those plugins, not yours to republish |
+| Cursor built-ins (`~/.cursor/skills-cursor`) | Already on every Cursor install |
+| Marketplace plugins (Figma, pstack, Claude/Codex bundled) | Installed by those plugins |
 | `lazyweb*` | Broken symlinks to `/tmp` |
-| `review` | Same skill as `code-review` (kept the newer `code-review` copy) |
+| `to-prd` | Renamed to `to-spec` (Matt Pocock v1.1) |
+| `to-issues` | Merged into `to-tickets` |
+| `decision-mapping` | Renamed to `wayfinder` |
+| `writing-great-skills` | Replaced by `writing-for-agents` |
+| `review` | Renamed to `code-review` |
 
 ## Related repo
 

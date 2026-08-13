@@ -12,15 +12,24 @@ import sys
 dest = Path(sys.argv[1])
 home = Path.home()
 
-# First match wins. plugin-local is the packaged pack (scripts/references);
-# then live agent homes. Cursor built-ins are never copied.
+# First match wins. Live ~/.agents is newer than the stale plugin-local
+# snapshot (Matt Pocock renamed to-prd/to-issues/decision-mapping).
+# plugin-local is last so unique extras (obsidian-vault, edit-article) still land.
 roots = [
-    home / ".cursor" / "plugins" / "local" / "personal-skills" / "skills",
     home / ".agents" / "skills",
     home / ".cursor" / "skills",
     home / ".claude" / "skills",
     home / ".codex" / "skills",
+    home / ".cursor" / "plugins" / "local" / "personal-skills" / "skills",
 ]
+# Old names Matt deleted/renamed. Do not copy them back from plugin-local.
+superseded = {
+    "to-prd",           # renamed to to-spec
+    "to-issues",        # merged into to-tickets
+    "decision-mapping", # renamed to wayfinder
+    "writing-great-skills",  # replaced by writing-for-agents
+    "review",           # renamed to code-review; also a Cursor built-in name
+}
 skills_cursor = home / ".cursor" / "skills-cursor"
 builtin = (
     {p.parent.name for p in skills_cursor.rglob("SKILL.md")}
@@ -36,7 +45,7 @@ for root in roots:
         if ".system" in skill_md.parts:
             continue
         name = skill_md.parent.name
-        if name in builtin:
+        if name in builtin or name in superseded:
             continue
         if name not in chosen:
             chosen[name] = skill_md.parent
