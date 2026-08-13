@@ -68,7 +68,7 @@ skills/<name>/SKILL.md   # what `npx skills add` installs
 
 Optional `scripts/`, `references/`, and `assets/` live next to each `SKILL.md`.
 
-## What’s in here (68)
+## What’s in here (69)
 
 Copied from live `~/.agents/skills` first, then `~/.cursor/skills`, `~/.claude/skills`, `~/.codex/skills`, then unique extras from the local plugin pack. Official Expo, Emil, Callstack, and Software Mansion skills below are vendored from GitHub so a Cloud VM can install them from this repo.
 
@@ -78,7 +78,7 @@ Copied from live `~/.agents/skills` first, then `~/.cursor/skills`, `~/.claude/s
 
 **Writing** — `edit-article`, `obsidian-vault`, `writing-beats`, `writing-for-agents`, `writing-fragments`, `writing-shape`
 
-**Mobile / Expo** — `app-ux-workflow-capture`, `expo-ios-hig`, `expo-ui`, `expo-project-structure`, `expo-router`, `expo-native-ui`, `expo-dev-client`, `expo-upgrade`, `mobile-touch`, `react-native-design`, `react-native-best-practices` (Callstack: FPS, TTI, bundle, memory), `react-native-best-practices-sm` (Software Mansion: Reanimated, Gesture Handler, Skia, worklets)
+**Mobile / Expo** — `app-ux-workflow-capture`, `expo-ios-hig`, `expo-ui`, `expo-project-structure`, `expo-router`, `expo-native-ui`, `expo-dev-client`, `expo-upgrade`, `eas-simulator`, `mobile-touch`, `react-native-design`, `react-native-best-practices` (Callstack: FPS, TTI, bundle, memory), `react-native-best-practices-sm` (Software Mansion: Reanimated, Gesture Handler, Skia, worklets)
 
 **Motion / UI** — `12-principles-of-animation`, `emil-prototype`, `emilkowal-animations`, `find-animation-opportunities`, `review-animations`, `generating-sounds-with-ai`, `mastering-animate-presence`, `morphing-icons`, `pseudo-elements`, `sounds-on-the-web`, `to-spring-or-not-to-spring`
 
@@ -91,6 +91,7 @@ These are not on your laptop’s `~/.agents` by default. `./sync-from-local.sh` 
 | Skill | Source | SHA |
 | --- | --- | --- |
 | `expo-project-structure`, `expo-router`, `expo-native-ui`, `expo-ui`, `expo-dev-client`, `expo-upgrade` | [expo/skills](https://github.com/expo/skills) | `3739723` |
+| `eas-simulator` | [expo/skills](https://github.com/expo/skills) | `92029db` |
 | `find-animation-opportunities`, `review-animations` | [emilkowalski/skills](https://github.com/emilkowalski/skills) | `78761e1` |
 | `react-native-best-practices` | [callstackincubator/agent-skills](https://github.com/callstackincubator/agent-skills) | `2766baa` |
 | `react-native-best-practices-sm` | [software-mansion-labs/skills](https://github.com/software-mansion-labs/skills) (`react-native-best-practices`, renamed so both fit) | `c4ac0ab` |
