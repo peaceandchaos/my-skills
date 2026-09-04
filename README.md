@@ -63,7 +63,8 @@ Then commit and push. Other machines / Cloud VMs pick up changes with `npx skill
 ## Layout
 
 ```text
-skills/<name>/SKILL.md   # what `npx skills add` installs
+skills/<name>/SKILL.md         # what `npx skills add` installs
+pstack/skills/<name>/SKILL.md  # pstack + poteto-mode; not installed by that CLI
 ```
 
 Optional `scripts/`, `references/`, and `assets/` live next to each `SKILL.md`.
@@ -95,6 +96,7 @@ These are not on your laptop’s `~/.agents` by default. `./sync-from-local.sh` 
 | `find-animation-opportunities`, `review-animations` | [emilkowalski/skills](https://github.com/emilkowalski/skills) | `78761e1` |
 | `react-native-best-practices` | [callstackincubator/agent-skills](https://github.com/callstackincubator/agent-skills) | `2766baa` |
 | `react-native-best-practices-sm` | [software-mansion-labs/skills](https://github.com/software-mansion-labs/skills) (`react-native-best-practices`, renamed so both fit) | `c4ac0ab` |
+| pstack (`pstack/skills/`, including poteto-mode) | [cursor/plugins `pstack`](https://github.com/cursor/plugins/tree/main/pstack) | `93b00b8` |
 
 Do not `npx skills add software-mansion-labs/skills --skill react-native-best-practices` on a machine that already has Callstack’s skill. Same folder name. Install Software Mansion from this pack as `react-native-best-practices-sm`.
 
@@ -103,7 +105,7 @@ Do not `npx skills add software-mansion-labs/skills --skill react-native-best-pr
 | Source | Why |
 | --- | --- |
 | Cursor built-ins (`~/.cursor/skills-cursor`) | Already on every Cursor install |
-| Marketplace plugins (Figma, pstack, Claude/Codex bundled) | Installed by those plugins |
+| Marketplace plugins (Figma, Claude/Codex bundled) | Installed by those plugins |
 | `lazyweb*` | Broken symlinks to `/tmp` |
 | `to-prd` | Renamed to `to-spec` (Matt Pocock v1.1) |
 | `to-issues` | Merged into `to-tickets` |

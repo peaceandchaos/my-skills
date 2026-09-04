@@ -11,6 +11,19 @@ import sys
 
 dest = Path(sys.argv[1])
 home = Path.home()
+repo_root = dest.parent
+pstack_skills = repo_root / "pstack" / "skills"
+pstack_names = (
+    {p.name for p in pstack_skills.iterdir() if p.is_dir()}
+    if pstack_skills.is_dir()
+    else set()
+)
+pack_names = (
+    {p.name for p in dest.iterdir() if p.is_dir()} if dest.exists() else set()
+)
+# pstack lives at pstack/skills/, not skills/. Never copy those names
+# into skills/ (tdd/teach already in this pack stay syncable from local).
+pstack_exclusive = pstack_names - pack_names
 
 # First match wins. Live ~/.agents is newer than the stale plugin-local
 # snapshot (Matt Pocock renamed to-prd/to-issues/decision-mapping).
@@ -45,7 +58,10 @@ for root in roots:
         if ".system" in skill_md.parts:
             continue
         name = skill_md.parent.name
-        if name in builtin or name in superseded:
+        if name in builtin or name in superseded or name in pstack_exclusive:
+            continue
+        # Don't let a pstack plugin tree overwrite pack skills (tdd, teach).
+        if "pstack" in skill_md.parts:
             continue
         if name not in chosen:
             chosen[name] = skill_md.parent
