@@ -1,8 +1,10 @@
 # Jev · Lighter desk
 
-A testing dashboard: live **Lighter** mark data, a **Liveline** chart, and a TypeSafe-style **Jev** loop (gate + buy/sell/hold) that can paper-trade a few bucks.
+A testing dashboard: live Lighter mark data, a Liveline chart, and a TypeSafe-style Jev loop (gate + buy/sell/hold) that can paper-trade a few bucks.
 
-This folder is a standalone Next.js app. It currently lives inside `peaceandchaos/my-skills` so Cloud Agents can ship it; extract to its own repo when you want.
+The chrome is Efferd dashboard 6 (shadcn cards, separators, 52-tick profit gauge) plus dashboard 5 session vitals. Dashboard 6 is Pro on the registry, so those blocks are ported, not `shadcn add @efferd/dashboard-6`.
+
+This folder is a standalone Next.js app. It currently lives inside `peaceandchaos/my-skills` so Cloud Agents can ship it. Extract it to its own repo when you want.
 
 ## Run
 
@@ -21,7 +23,7 @@ Open [http://localhost:3000](http://localhost:3000).
 - Liveline line ↔ candle morph, TradingView-style hover card, and a **Chart** panel for every Liveline flag (degen, exaggerate, orderbook overlay, mark vs index, …).
 - Session wallet starts at **$100**. Ticket: market/limit, 1–5x isolated, SL/TP, reduce-only, flatten.
 - Modes: **Advisory** (Jev talks), **Paper auto** (Jev fires ~every 2s when the gate passes), **Live auto** (same fills until WASM signing is wired).
-- Tiles: win rate (session round-trips + Jev 30s hit rate), all-time session orders, AOV, profit donut (realized vs unrealized), Jev stance, open position, vitals (latency / fee bps / slippage).
+- Layout: win rate, all-time session orders, AOV, wallet Liveline, session vitals (latency / fee bps / slippage), ticket. Right rail: profit gauge (realized vs unrealized), Jev stance mix, open position.
 
 ## Money
 

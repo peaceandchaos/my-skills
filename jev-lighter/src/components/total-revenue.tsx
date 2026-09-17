@@ -33,24 +33,24 @@ const PROFIT_SPLIT: Record<
 	},
 };
 
-function angleDegForSegment(index: number) {
-	const denom = Math.max(1, GAUGE_SEGMENTS - 1);
-	return -135 + (index / denom) * 270;
+function round2(n: number) {
+	return Math.round(n * 100) / 100;
 }
 
-function tickLine(angleDeg: number) {
-	const rad = (angleDeg * Math.PI) / 180;
+const GAUGE_TICKS = Array.from({ length: GAUGE_SEGMENTS }, (_, index) => {
+	const denom = Math.max(1, GAUGE_SEGMENTS - 1);
+	const rad = ((-135 + (index / denom) * 270) * Math.PI) / 180;
 	const sin = Math.sin(rad);
 	const cos = Math.cos(rad);
 	const r1 = R_MID - TICK_HALF;
 	const r2 = R_MID + TICK_HALF;
 	return {
-		x1: CX + r1 * sin,
-		y1: CY - r1 * cos,
-		x2: CX + r2 * sin,
-		y2: CY - r2 * cos,
+		x1: round2(CX + r1 * sin),
+		y1: round2(CY - r1 * cos),
+		x2: round2(CX + r2 * sin),
+		y2: round2(CY - r2 * cos),
 	};
-}
+});
 
 function ProfitRadialGauge({
 	progress,
@@ -72,25 +72,23 @@ function ProfitRadialGauge({
 				className="inset-0 size-full overflow-visible"
 				viewBox={`0 0 ${VB.w} ${VB.h}`}
 			>
-				{Array.from({ length: GAUGE_SEGMENTS }).map((_, index) => {
-					const angle = angleDegForSegment(index);
+				{GAUGE_TICKS.map((tick, index) => {
 					const active = index < filledCount;
 					const split = active
 						? PROFIT_SPLIT.realized
 						: PROFIT_SPLIT.unrealized;
-					const { x1, y1, x2, y2 } = tickLine(angle);
 
 					return (
 						<line
-							key={`gauge-${angle.toFixed(5)}`}
+							key={`gauge-${index}`}
 							stroke={split.color}
 							strokeLinecap="round"
 							strokeOpacity={split.opacity ?? 1}
 							strokeWidth={STROKE}
-							x1={x1}
-							x2={x2}
-							y1={y1}
-							y2={y2}
+							x1={tick.x1}
+							x2={tick.x2}
+							y1={tick.y1}
+							y2={tick.y2}
 						/>
 					);
 				})}
