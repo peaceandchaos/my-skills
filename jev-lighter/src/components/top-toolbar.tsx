@@ -9,7 +9,6 @@ import {
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
-	SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -28,6 +27,8 @@ export function TopToolbar() {
 	const periodValue = PERIOD_OPTIONS.some((o) => o.value === windowSecs)
 		? String(windowSecs)
 		: "300";
+	const periodLabel =
+		PERIOD_OPTIONS.find((o) => String(o.value) === periodValue)?.label ?? "Last 5m";
 
 	return (
 		<div className="flex w-full flex-col items-start justify-between gap-4 lg:flex-row">
@@ -50,7 +51,7 @@ export function TopToolbar() {
 					value={periodValue}
 				>
 					<SelectTrigger aria-label="Liveline window">
-						<SelectValue />
+						<span className="min-w-0 truncate">{periodLabel}</span>
 					</SelectTrigger>
 					<SelectContent align="start">
 						{PERIOD_OPTIONS.map((o) => (

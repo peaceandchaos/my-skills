@@ -123,7 +123,7 @@ export function LiveChart() {
       <div className="flex flex-wrap items-end justify-between gap-4 md:pe-4">
         <div className="flex flex-col items-start gap-1">
           <span className="font-semibold text-2xl tabular-nums">
-            {formatCompactCurrency(eq, { maximumFractionDigits: 1 })}
+            {formatCompactCurrency(eq)}
           </span>
           <DashboardCardTitle>Wallet</DashboardCardTitle>
         </div>
