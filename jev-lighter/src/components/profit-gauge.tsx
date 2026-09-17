@@ -33,7 +33,7 @@ const PROFIT_SPLIT: Record<
 	},
 };
 
-function round2(n: number) {
+function ssrTickCoord(n: number) {
 	return Math.round(n * 100) / 100;
 }
 
@@ -45,10 +45,10 @@ const GAUGE_TICKS = Array.from({ length: GAUGE_SEGMENTS }, (_, index) => {
 	const r1 = R_MID - TICK_HALF;
 	const r2 = R_MID + TICK_HALF;
 	return {
-		x1: round2(CX + r1 * sin),
-		y1: round2(CY - r1 * cos),
-		x2: round2(CX + r2 * sin),
-		y2: round2(CY - r2 * cos),
+		x1: ssrTickCoord(CX + r1 * sin),
+		y1: ssrTickCoord(CY - r1 * cos),
+		x2: ssrTickCoord(CX + r2 * sin),
+		y2: ssrTickCoord(CY - r2 * cos),
 	};
 });
 

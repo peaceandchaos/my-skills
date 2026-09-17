@@ -166,6 +166,14 @@ export function DeskProvider({ children }: { children: ReactNode }) {
   const [orderbook, setOrderbook] = useState<OrderbookData | undefined>();
   const [execMode, setExecMode] = useState<ExecMode>("paper");
   const [account, setAccount] = useState<Account>(freshAccount);
+  const [sessionRestored, setSessionRestored] = useState(false);
+  if (typeof window !== "undefined" && !sessionRestored) {
+    setSessionRestored(true);
+    const saved = loadAccount();
+    if (saved.fills.length || saved.positions.length || saved.cash !== saved.startingCash) {
+      setAccount(saved);
+    }
+  }
   const [ticket, setTicketState] = useState<TicketState>({
     side: "buy",
     type: "market",
@@ -222,13 +230,6 @@ export function DeskProvider({ children }: { children: ReactNode }) {
     const sync = () => setReducedMotion(mq.matches);
     sync();
     mq.addEventListener("change", sync);
-    try {
-      const saved = loadAccount();
-      if (saved.fills.length || saved.positions.length || saved.cash !== saved.startingCash) {
-        queueMicrotask(() => setAccount(saved));
-      }
-    } catch {
-    }
     return () => mq.removeEventListener("change", sync);
   }, []);
 

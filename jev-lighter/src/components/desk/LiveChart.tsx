@@ -15,6 +15,9 @@ import {
 } from "@/components/ui/popover";
 import { compactUsd, fmtPrice } from "@/lib/format";
 
+const LIVELINE_PAD_LEFT = 52;
+const LIVELINE_PAD_RIGHT = 16;
+
 export function LiveChart() {
   const desk = useDesk();
   const [settings, setSettings] = useState(false);
@@ -69,10 +72,8 @@ export function LiveChart() {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const padL = 52;
-    const padR = 16;
-    const chartW = Math.max(1, rect.width - padL - padR);
-    const frac = Math.min(1, Math.max(0, (x - padL) / chartW));
+    const chartW = Math.max(1, rect.width - LIVELINE_PAD_LEFT - LIVELINE_PAD_RIGHT);
+    const frac = Math.min(1, Math.max(0, (x - LIVELINE_PAD_LEFT) / chartW));
     const tEnd = line[line.length - 1].time;
     const tStart = tEnd - windowSecs;
     const t = tStart + frac * windowSecs;

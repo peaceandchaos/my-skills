@@ -45,13 +45,8 @@ export class LighterSocket {
       this.ping = setInterval(() => this.send({ type: "ping" }), 2500);
     };
     ws.onmessage = (ev) => {
-      try {
-        const msg = JSON.parse(String(ev.data)) as Record<string, unknown>;
-        this.onMessage(msg);
-      } catch {
-      }
-    };
-    ws.onerror = () => {
+      const msg = parseFrame(ev.data);
+      if (msg) this.onMessage(msg);
     };
     ws.onclose = () => {
       this.onStatus("down");
@@ -77,6 +72,17 @@ export class LighterSocket {
       this.ws.close();
       this.ws = null;
     }
+  }
+}
+
+function parseFrame(data: unknown): Record<string, unknown> | null {
+  if (typeof data !== "string" || data[0] !== "{") return null;
+  try {
+    const msg = JSON.parse(data) as unknown;
+    if (!msg || typeof msg !== "object" || Array.isArray(msg)) return null;
+    return msg as Record<string, unknown>;
+  } catch {
+    return null;
   }
 }
 
