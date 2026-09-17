@@ -22,7 +22,7 @@ export function WebVitals() {
 			delta: lastLatency ? 250 - lastLatency : 0,
 			deltaLabel: account.jevResolved
 				? `${Math.round(jevHit * 100)}% hit at 30s horizon`
-				: "Round-trip to /api/jev",
+				: "mockDecide in this tab",
 			suffix: "ms",
 		},
 		{

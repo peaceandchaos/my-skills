@@ -25,7 +25,7 @@ import {
 } from "@/lib/lighter/config";
 import { parseStats } from "@/lib/lighter/parse";
 import { LighterSocket } from "@/lib/lighter/ws";
-import type { JevDecision } from "@/lib/jev/mock";
+import { mockDecide } from "@/lib/jev/mock";
 import {
   applyMarks,
   equity,
@@ -447,17 +447,7 @@ export function DeskProvider({ children }: { children: ReactNode }) {
         lastSide: lastSideRef.current,
       };
       const t0 = Date.now();
-      let decision: JevDecision & { latencyMs?: number };
-      try {
-        const res = await fetch("/api/jev", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify(body),
-        });
-        decision = await res.json();
-      } catch {
-        return;
-      }
+      const decision = mockDecide(body, t0);
       const latencyMs = Date.now() - t0;
       lastSideRef.current = decision.side;
       const mode = execRef.current;
@@ -512,7 +502,7 @@ export function DeskProvider({ children }: { children: ReactNode }) {
         tradeNow: decision.tradeNow,
         skipped: decision.skipped,
         skipReason: decision.skipReason,
-        latencyMs: decision.latencyMs ?? latencyMs,
+        latencyMs,
         executed,
       });
     }, JEV_INTERVAL_MS);

@@ -1,6 +1,38 @@
 # Jev · Lighter desk
 
+Live desk: [https://jev-lighter.excellent-vanadium.workers.dev](https://jev-lighter.excellent-vanadium.workers.dev)
+
 ## How to run the desk
+
+1. Install dependencies.
+
+```bash
+cd jev-lighter
+npm install
+```
+
+2. Start the Next.js app.
+
+```bash
+npm run dev
+```
+
+3. Open http://localhost:3000. You should see the toolbar, a Liveline wallet chart, and a Buy or Sell ticket.
+
+4. Wait until the toolbar says **Lighter mark**. Submit a paper buy. Flatten when you want the session flat again.
+
+## How to publish the desk
+
+The app is a static export. Markets, candles, and the Lighter websocket talk to Lighter from the browser. `mockDecide` runs in the tab.
+
+```bash
+cd jev-lighter
+npm run deploy
+```
+
+That runs `next build` then `wrangler deploy`. The Worker name is `jev-lighter` in `wrangler.jsonc`.
+
+`npm test` runs the paper broker, Jev mock, formatter, and window-list pins. `npx tsc --noEmit` and `npm run lint` check the app.
 
 1. Install dependencies.
 
@@ -37,4 +69,4 @@ Standalone Next.js 16 app. Chrome is Efferd dashboard 6 plus the dashboard 5 ses
 
 Session wallet starts at `$100` (`STARTING_CASH` in `src/lib/lighter/config.ts`). Paper fills never send a Lighter transaction. Live auto still paper-fills and says so. Chart windows come from `LINE_WINDOWS` and `CANDLE_WINDOWS`. The toolbar select is their unique union, `DESK_WINDOWS`.
 
-`TYPESAFE_AI_API_KEY` is reserved for swapping `/api/jev` from `src/lib/jev/mock.ts` to TypeSafe Jev. The mock stays until that key is present.
+`TYPESAFE_AI_API_KEY` is reserved for swapping `mockDecide` in `src/lib/jev/mock.ts` to TypeSafe Jev. The mock stays until that key is present.
