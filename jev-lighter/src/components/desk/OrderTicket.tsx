@@ -1,8 +1,14 @@
 "use client";
 
 import { MAX_LEVERAGE, useDesk } from "@/components/desk/DeskProvider";
-import { cn } from "@/lib/cn";
+import { DashboardCard, DashboardCardTitle } from "@/components/dashboard-card";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { DEFAULT_ORDER_USD } from "@/lib/lighter/config";
+import type { OrderType, Side } from "@/lib/types";
 
 export function OrderTicket() {
   const { ticket, setTicket, submitTicket, lastError, market, execMode } = useDesk();
@@ -12,119 +18,107 @@ export function OrderTicket() {
   );
 
   return (
-    <section id="ticket" className="rounded-2xl border border-white/6 bg-[#111] px-5 py-4">
-      <div className="mb-3 flex items-center justify-between">
-        <div className="text-[15px] font-medium">Ticket</div>
-        <div className="text-[11px] text-white/35">
+    <DashboardCard className="gap-4" id="ticket">
+      <div className="flex items-center justify-between">
+        <DashboardCardTitle>Ticket</DashboardCardTitle>
+        <span className="text-muted-foreground text-xs">
           {execMode === "live" ? "Live (paper fallback)" : execMode}
-        </div>
+        </span>
       </div>
-      <div className="grid grid-cols-2 gap-1 rounded-full bg-white/5 p-1">
-        {(["buy", "sell"] as const).map((s) => (
-          <button
-            key={s}
-            type="button"
-            onClick={() => setTicket({ side: s })}
-            className={cn(
-              "rounded-full py-1.5 text-[13px] capitalize motion-safe:active:scale-[0.97]",
-              ticket.side === s
-                ? s === "buy"
-                  ? "bg-emerald-500/20 text-emerald-300"
-                  : "bg-red-500/20 text-red-300"
-                : "text-white/45",
-            )}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-      <div className="mt-3 grid grid-cols-2 gap-1 rounded-full bg-white/5 p-1">
-        {(["market", "limit"] as const).map((s) => (
-          <button
-            key={s}
-            type="button"
-            onClick={() => setTicket({ type: s })}
-            className={cn(
-              "rounded-full py-1.5 text-[13px] capitalize motion-safe:active:scale-[0.97]",
-              ticket.type === s ? "bg-white/12 text-white" : "text-white/45",
-            )}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-      <label className="mt-3 block text-[12px] text-white/40">
+      <ToggleGroup
+        className="w-full"
+        onValueChange={(v) => {
+          if (v) setTicket({ side: v as Side });
+        }}
+        spacing={0}
+        type="single"
+        value={ticket.side}
+        variant="outline"
+      >
+        <ToggleGroupItem
+          className="flex-1 capitalize data-[state=on]:bg-emerald-500/15 data-[state=on]:text-emerald-400"
+          value="buy"
+        >
+          Buy
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          className="flex-1 capitalize data-[state=on]:bg-rose-500/15 data-[state=on]:text-rose-400"
+          value="sell"
+        >
+          Sell
+        </ToggleGroupItem>
+      </ToggleGroup>
+      <ToggleGroup
+        className="w-full"
+        onValueChange={(v) => {
+          if (v) setTicket({ type: v as OrderType });
+        }}
+        spacing={0}
+        type="single"
+        value={ticket.type}
+        variant="outline"
+      >
+        <ToggleGroupItem className="flex-1 capitalize" value="market">
+          Market
+        </ToggleGroupItem>
+        <ToggleGroupItem className="flex-1 capitalize" value="limit">
+          Limit
+        </ToggleGroupItem>
+      </ToggleGroup>
+      <label className="flex flex-col gap-1.5 text-muted-foreground text-xs">
         Size USDC
-        <input
-          type="number"
+        <Input
           min={market?.minQuote ?? 10}
-          step={1}
-          value={ticket.quoteUsd}
           onChange={(e) => setTicket({ quoteUsd: Number(e.target.value) || DEFAULT_ORDER_USD })}
-          className="mt-1 w-full rounded-lg border border-white/8 bg-transparent px-3 py-2 text-[14px] text-white outline-none"
+          step={1}
+          type="number"
+          value={ticket.quoteUsd}
         />
       </label>
-      <label className="mt-2 block text-[12px] text-white/40">
+      <label className="flex flex-col gap-2 text-muted-foreground text-xs">
         Leverage {ticket.leverage}x isolated
-        <input
-          type="range"
-          min={1}
+        <Slider
           max={maxLev}
+          min={1}
+          onValueChange={(v) => setTicket({ leverage: v[0] ?? ticket.leverage })}
           step={1}
-          value={ticket.leverage}
-          onChange={(e) => setTicket({ leverage: Number(e.target.value) })}
-          className="mt-2 w-full"
+          value={[ticket.leverage]}
         />
       </label>
       {ticket.type === "limit" ? (
-        <label className="mt-2 block text-[12px] text-white/40">
+        <label className="flex flex-col gap-1.5 text-muted-foreground text-xs">
           Limit
-          <input
-            value={ticket.limitPrice}
+          <Input
             onChange={(e) => setTicket({ limitPrice: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-white/8 bg-transparent px-3 py-2 text-[14px] outline-none"
+            value={ticket.limitPrice}
           />
         </label>
       ) : null}
-      <div className="mt-2 grid grid-cols-2 gap-2">
-        <label className="text-[12px] text-white/40">
+      <div className="grid grid-cols-2 gap-2">
+        <label className="flex flex-col gap-1.5 text-muted-foreground text-xs">
           SL
-          <input
-            value={ticket.sl}
-            onChange={(e) => setTicket({ sl: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-white/8 bg-transparent px-3 py-2 text-[14px] outline-none"
-          />
+          <Input onChange={(e) => setTicket({ sl: e.target.value })} value={ticket.sl} />
         </label>
-        <label className="text-[12px] text-white/40">
+        <label className="flex flex-col gap-1.5 text-muted-foreground text-xs">
           TP
-          <input
-            value={ticket.tp}
-            onChange={(e) => setTicket({ tp: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-white/8 bg-transparent px-3 py-2 text-[14px] outline-none"
-          />
+          <Input onChange={(e) => setTicket({ tp: e.target.value })} value={ticket.tp} />
         </label>
       </div>
-      <label className="mt-3 flex items-center gap-2 text-[13px] text-white/55">
-        <input
-          type="checkbox"
+      <label className="flex items-center gap-2 text-sm">
+        <Checkbox
           checked={ticket.reduceOnly}
-          onChange={(e) => setTicket({ reduceOnly: e.target.checked })}
+          onCheckedChange={(v) => setTicket({ reduceOnly: v === true })}
         />
         Reduce only
       </label>
-      {lastError ? (
-        <div className="mt-2 text-[12px] text-amber-300">{lastError}</div>
-      ) : null}
-      <button
-        type="button"
+      {lastError ? <div className="text-amber-500 text-xs">{lastError}</div> : null}
+      <Button
+        className="w-full"
         onClick={() => submitTicket()}
-        className={cn(
-          "mt-4 w-full rounded-full py-2.5 text-[14px] font-medium motion-safe:transition-transform motion-safe:duration-150 motion-safe:active:scale-[0.97]",
-          ticket.side === "buy" ? "bg-emerald-500/90 text-black" : "bg-red-500/90 text-white",
-        )}
+        variant={ticket.side === "buy" ? "default" : "destructive"}
       >
         {ticket.side === "buy" ? "Buy" : "Sell"} {market?.symbol ?? ""}
-      </button>
-    </section>
+      </Button>
+    </DashboardCard>
   );
 }

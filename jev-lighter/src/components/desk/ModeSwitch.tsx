@@ -1,7 +1,8 @@
 "use client";
 
-import { cn } from "@/lib/cn";
 import { useDesk } from "@/components/desk/DeskProvider";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import type { ExecMode } from "@/lib/types";
 
 const modes = [
   { id: "advisory", label: "Advisory" },
@@ -12,29 +13,22 @@ const modes = [
 export function ModeSwitch() {
   const { execMode, setExecMode } = useDesk();
   return (
-    <div
-      className="flex rounded-full bg-white/5 p-1 text-[13px]"
-      role="tablist"
+    <ToggleGroup
       aria-label="Execution mode"
+      onValueChange={(v) => {
+        if (v) setExecMode(v as ExecMode);
+      }}
+      size="sm"
+      spacing={0}
+      type="single"
+      value={execMode}
+      variant="outline"
     >
-      {modes.map((m) => {
-        const on = execMode === m.id;
-        return (
-          <button
-            key={m.id}
-            type="button"
-            role="tab"
-            aria-selected={on}
-            onClick={() => setExecMode(m.id)}
-            className={cn(
-              "rounded-full px-3 py-1.5 motion-safe:transition-[color,background-color,transform] motion-safe:duration-150 motion-safe:ease-out motion-safe:active:scale-[0.97]",
-              on ? "bg-white/12 text-white" : "text-white/50 hover:text-white/80",
-            )}
-          >
-            {m.label}
-          </button>
-        );
-      })}
-    </div>
+      {modes.map((m) => (
+        <ToggleGroupItem key={m.id} value={m.id}>
+          {m.label}
+        </ToggleGroupItem>
+      ))}
+    </ToggleGroup>
   );
 }

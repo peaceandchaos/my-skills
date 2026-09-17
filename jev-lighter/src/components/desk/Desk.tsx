@@ -1,32 +1,53 @@
 "use client";
 
 import { DeskProvider } from "@/components/desk/DeskProvider";
-import { HeaderBar } from "@/components/desk/HeaderBar";
-import { JevStance } from "@/components/desk/JevStance";
-import { KpiRow } from "@/components/desk/KpiRow";
 import { LiveChart } from "@/components/desk/LiveChart";
 import { OrderTicket } from "@/components/desk/OrderTicket";
-import { PositionCard } from "@/components/desk/PositionCard";
-import { ProfitGauge } from "@/components/desk/ProfitGauge";
-import { Vitals } from "@/components/desk/Vitals";
+import { ActiveCustomers } from "@/components/active-customers";
+import { DashboardCardSeparator } from "@/components/dashboard-card";
+import { FedIncomeTax } from "@/components/fed-income-tax";
+import { DashboardStats } from "@/components/stats";
+import { TopToolbar } from "@/components/top-toolbar";
+import { TotalRevenue } from "@/components/total-revenue";
+import { WebVitals } from "@/components/web-vitals";
+import { cn } from "@/lib/utils";
 
 export function Desk() {
   return (
     <DeskProvider>
-      <div className="min-h-screen bg-[#0a0a0a] px-4 py-5 text-zinc-100 md:px-6">
-        <div className="mx-auto max-w-[1360px]">
-          <HeaderBar />
-          <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
-            <div className="flex min-w-0 flex-col gap-4">
-              <KpiRow />
+      <div className="min-h-screen bg-background px-4 py-6 text-foreground md:px-6">
+        <div className="mx-auto flex max-w-[1360px] flex-col gap-6">
+          <TopToolbar />
+          <div
+            className={cn(
+              "grid grid-cols-1 gap-4",
+              "lg:grid-cols-[.68fr_.32fr] xl:grid-cols-[.70fr_.30fr]",
+              "*:grid *:h-max *:gap-2",
+            )}
+          >
+            <div>
+              <DashboardStats />
+              <DashboardCardSeparator />
               <LiveChart />
-              <Vitals />
-            </div>
-            <div className="flex flex-col gap-4">
-              <ProfitGauge />
-              <JevStance />
+              <DashboardCardSeparator />
+              <WebVitals />
+              <DashboardCardSeparator />
               <OrderTicket />
-              <PositionCard />
+            </div>
+            <div className="relative">
+              <DashboardCardSeparator
+                className="absolute inset-y-0 -left-2 hidden h-full w-px lg:block"
+                orientation="vertical"
+              />
+              <DashboardCardSeparator
+                className="block lg:hidden"
+                orientation="horizontal"
+              />
+              <TotalRevenue />
+              <DashboardCardSeparator />
+              <ActiveCustomers />
+              <DashboardCardSeparator />
+              <FedIncomeTax />
             </div>
           </div>
         </div>

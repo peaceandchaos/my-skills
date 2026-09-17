@@ -5,7 +5,16 @@ import { Liveline, type CandlePoint, type HoverPoint, type ReferenceLine } from 
 import { ChartSettings } from "@/components/desk/ChartSettings";
 import { CANDLE_WINDOWS, LINE_WINDOWS, liqPrice, useDesk } from "@/components/desk/DeskProvider";
 import { TvTooltip } from "@/components/desk/TvTooltip";
-import { compactUsd, fmtPct, fmtPrice, usd } from "@/lib/format";
+import { DashboardCard, DashboardCardTitle } from "@/components/dashboard-card";
+import { Delta, DeltaIcon, DeltaValue } from "@/components/delta";
+import { formatCompactCurrency } from "@/components/formater";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { fmtPrice } from "@/lib/format";
 
 export function LiveChart() {
   const desk = useDesk();
@@ -28,7 +37,6 @@ export function LiveChart() {
     orderbook,
     reducedMotion,
     eq,
-    uPnL,
     currentPos,
     stats,
     marketId,
@@ -36,9 +44,7 @@ export function LiveChart() {
 
   const value = line[line.length - 1]?.value ?? mark;
   const windows = chartMode === "candle" ? CANDLE_WINDOWS : LINE_WINDOWS;
-  const change = market
-    ? (stats[marketId]?.dailyChange ?? 0) / 100
-    : 0;
+  const changePct = market ? (stats[marketId]?.dailyChange ?? 0) : 0;
 
   const reference: ReferenceLine | undefined = useMemo(() => {
     if (!currentPos) return undefined;
@@ -113,31 +119,35 @@ export function LiveChart() {
     : undefined;
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-white/6 bg-[#111] p-4 md:p-5">
-      <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <div className="text-[13px] text-white/45">Wallet</div>
-          <div className="text-[34px] font-medium tracking-tight">{compactUsd(eq)}</div>
+    <DashboardCard className="gap-6">
+      <div className="flex flex-wrap items-end justify-between gap-4 md:pe-4">
+        <div className="flex flex-col items-start gap-1">
+          <span className="font-semibold text-2xl tabular-nums">
+            {formatCompactCurrency(eq, { maximumFractionDigits: 1 })}
+          </span>
+          <DashboardCardTitle>Wallet</DashboardCardTitle>
         </div>
-        <div className="flex items-center gap-2 text-[12px]">
-          <span className={change >= 0 ? "text-emerald-400" : "text-red-400"}>
-            {change >= 0 ? "▲" : "▼"} {fmtPct(Math.abs(change), 1)} 24h
-          </span>
-          <span className={uPnL >= 0 ? "text-emerald-400" : "text-red-400"}>
-            {uPnL >= 0 ? "+" : ""}
-            {usd(uPnL, 2)} pos
-          </span>
-          <button
-            type="button"
-            onClick={() => setSettings((v) => !v)}
-            className="rounded-full border border-white/10 px-2.5 py-1 text-white/60 motion-safe:active:scale-[0.97]"
-          >
-            Chart
-          </button>
+
+        <div className="inline-flex items-center gap-2 text-xs">
+          <Delta value={changePct}>
+            <DeltaIcon filled variant="arrow" />
+            <DeltaValue />
+          </Delta>
+          <span className="text-muted-foreground">24h</span>
+          <Popover onOpenChange={setSettings} open={settings}>
+            <PopoverTrigger asChild>
+              <Button size="sm" variant="outline">
+                Chart
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-80">
+              <ChartSettings />
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
       <div
-        className="relative h-[320px] md:h-[360px]"
+        className="relative h-64 w-full md:h-80"
         onMouseMove={onChartMove}
         onMouseLeave={() => setLocalHover(null)}
       >
@@ -193,8 +203,7 @@ export function LiveChart() {
           decimals={market?.priceDecimals ?? 2}
           symbol={market?.symbol ?? ""}
         />
-        <ChartSettings open={settings} onClose={() => setSettings(false)} />
       </div>
-    </section>
+    </DashboardCard>
   );
 }
