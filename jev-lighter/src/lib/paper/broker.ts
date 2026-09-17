@@ -2,7 +2,7 @@ import {
   MAX_LEVERAGE,
   PAPER_SLIP_BPS,
   STARTING_CASH,
-} from "@/lib/lighter/config";
+} from "../lighter/config";
 import type {
   Account,
   Fill,
@@ -10,7 +10,7 @@ import type {
   Position,
   RestingOrder,
   Side,
-} from "@/lib/types";
+} from "../types";
 
 export function freshAccount(cash = STARTING_CASH): Account {
   return {

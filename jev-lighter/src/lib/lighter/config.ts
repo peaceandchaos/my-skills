@@ -27,3 +27,14 @@ export const CANDLE_WINDOWS = [
   { label: "1h", secs: 3600 },
   { label: "4h", secs: 14_400 },
 ];
+
+const deskWindowBySecs = new Map<number, { label: string; secs: number }>();
+for (const window of [...LINE_WINDOWS, ...CANDLE_WINDOWS]) {
+  if (!deskWindowBySecs.has(window.secs)) {
+    deskWindowBySecs.set(window.secs, window);
+  }
+}
+
+export const DESK_WINDOWS = [...deskWindowBySecs.values()].sort(
+  (a, b) => a.secs - b.secs,
+);

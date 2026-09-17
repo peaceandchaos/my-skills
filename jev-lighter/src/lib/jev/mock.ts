@@ -1,5 +1,5 @@
-import { FLIP_THRESHOLD, GATE_THRESHOLD } from "@/lib/lighter/config";
-import type { JevSide } from "@/lib/types";
+import { FLIP_THRESHOLD, GATE_THRESHOLD } from "../lighter/config";
+import type { JevSide } from "../types";
 
 export type JevState = {
   symbol: string;

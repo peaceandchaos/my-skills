@@ -40,6 +40,10 @@ export function fmtPct(n: number, digits = 1) {
   return `${n >= 0 ? "" : "−"}${Math.abs(n * 100).toFixed(digits)}%`;
 }
 
+export function fmtInt(n: number) {
+  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(n);
+}
+
 export function fmtTime(tsSec: number) {
   const d = new Date(tsSec * 1000);
   return d.toLocaleTimeString("en-US", {
