@@ -227,7 +227,6 @@ export function DeskProvider({ children }: { children: ReactNode }) {
         queueMicrotask(() => setAccount(saved));
       }
     } catch {
-      /* keep fresh */
     }
     return () => mq.removeEventListener("change", sync);
   }, []);

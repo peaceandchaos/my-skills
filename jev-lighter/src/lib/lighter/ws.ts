@@ -49,11 +49,9 @@ export class LighterSocket {
         const msg = JSON.parse(String(ev.data)) as Record<string, unknown>;
         this.onMessage(msg);
       } catch {
-        /* ignore */
       }
     };
     ws.onerror = () => {
-      /* onclose handles retry */
     };
     ws.onclose = () => {
       this.onStatus("down");

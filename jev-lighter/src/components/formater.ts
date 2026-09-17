@@ -1,7 +1,6 @@
 export const DASHBOARD_LOCALE = "en-US";
 export const DASHBOARD_CURRENCY = "USD";
 
-/** Noon local calendar date. Midnight ISO strings shift the calendar day around UTC. */
 export function parseIsoCalendarDate(isoDate: string): Date {
 	return new Date(`${isoDate}T12:00:00`);
 }

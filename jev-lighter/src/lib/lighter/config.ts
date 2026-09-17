@@ -2,7 +2,7 @@ export const LIGHTER_REST = "https://mainnet.zklighter.elliot.ai";
 export const LIGHTER_WS =
   "wss://mainnet.zklighter.elliot.ai/stream?encoding=json&readonly=true";
 
-export const DEFAULT_MARKET_ID = 1; // BTC — most liquid perp
+export const DEFAULT_MARKET_ID = 1;
 export const STARTING_CASH = 100;
 export const DEFAULT_ORDER_USD = 15;
 export const MAX_LEVERAGE = 5;
