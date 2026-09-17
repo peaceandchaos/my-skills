@@ -13,8 +13,9 @@ import {
 import type { CandlePoint, HoverPoint, LivelinePoint, OrderbookData } from "liveline";
 import { fetchCandles, fetchMarkets } from "@/lib/lighter/client";
 import {
-  CHART_FLUSH_MS,
   CANDLE_WINDOWS,
+  CHART_FLUSH_MS,
+  DESK_WINDOWS,
   DEFAULT_MARKET_ID,
   DEFAULT_ORDER_USD,
   JEV_HORIZON_MS,
@@ -22,8 +23,15 @@ import {
   LINE_CAP,
   LINE_WINDOWS,
   MAX_LEVERAGE,
+  TICK_KEEP_SECS,
+  candleSpec,
 } from "@/lib/lighter/config";
 import { parseStats } from "@/lib/lighter/parse";
+import {
+  closesFromCandles,
+  mergeLineHistory,
+  trimTicks,
+} from "@/lib/lighter/series";
 import { LighterSocket } from "@/lib/lighter/ws";
 import { mockDecide } from "@/lib/jev/mock";
 import {
@@ -160,7 +168,7 @@ export function DeskProvider({ children }: { children: ReactNode }) {
   const [candles, setCandles] = useState<CandlePoint[]>([]);
   const [liveCandle, setLiveCandle] = useState<CandlePoint | undefined>();
   const [chartMode, setChartMode] = useState<ChartMode>("line");
-  const [windowSecs, setWindowSecs] = useState(300);
+  const [windowSecs, setWindowSecsState] = useState(300);
   const [flags, setFlagsState] = useState<LivelineFlags>(defaultFlags);
   const [hover, setHover] = useState<HoverPoint | null>(null);
   const [orderbook, setOrderbook] = useState<OrderbookData | undefined>();
@@ -188,8 +196,12 @@ export function DeskProvider({ children }: { children: ReactNode }) {
   const [lastError, setLastError] = useState<string | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
 
+  const historyRef = useRef<LivelinePoint[]>([]);
+  const tickRef = useRef<LivelinePoint[]>([]);
+  const indexTickRef = useRef<LivelinePoint[]>([]);
   const lineRef = useRef<LivelinePoint[]>([]);
   const indexRef = useRef<LivelinePoint[]>([]);
+  const windowSecsRef = useRef(windowSecs);
   const statsRef = useRef(stats);
   const accountRef = useRef(account);
   const marketIdRef = useRef(marketId);
@@ -218,6 +230,9 @@ export function DeskProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     marketsRef.current = markets;
   }, [markets]);
+  useEffect(() => {
+    windowSecsRef.current = windowSecs;
+  }, [windowSecs]);
 
   const market = useMemo(
     () => markets.find((m) => m.marketId === marketId),
@@ -244,14 +259,23 @@ export function DeskProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const pushTick = useCallback((t: number, markPx: number, indexPx?: number) => {
-    const next = lineRef.current.concat({ time: t, value: markPx });
-    if (next.length > LINE_CAP) next.splice(0, next.length - LINE_CAP);
-    lineRef.current = next;
+    const keepSecs = Math.max(120, Math.min(windowSecsRef.current, TICK_KEEP_SECS));
+    tickRef.current = trimTicks(
+      tickRef.current.concat({ time: t, value: markPx }),
+      t,
+      keepSecs,
+      LINE_CAP,
+    );
     if (indexPx && indexPx > 0) {
-      const idx = indexRef.current.concat({ time: t, value: indexPx });
-      if (idx.length > LINE_CAP) idx.splice(0, idx.length - LINE_CAP);
-      indexRef.current = idx;
+      indexTickRef.current = trimTicks(
+        indexTickRef.current.concat({ time: t, value: indexPx }),
+        t,
+        keepSecs,
+        LINE_CAP,
+      );
     }
+    lineRef.current = mergeLineHistory(historyRef.current, tickRef.current);
+    indexRef.current = mergeLineHistory([], indexTickRef.current);
   }, []);
 
   useEffect(() => {
@@ -308,6 +332,16 @@ export function DeskProvider({ children }: { children: ReactNode }) {
           if (prevLive && prevLive.time !== c.time) {
             setCandles((cs) => cs.concat(prevLive).slice(-800));
           }
+          const hist = historyRef.current;
+          const lastHist = hist[hist.length - 1];
+          if (!lastHist || lastHist.time < c.time) {
+            historyRef.current = hist.concat({ time: c.time, value: c.close });
+          } else {
+            historyRef.current = hist
+              .slice(0, -1)
+              .concat({ time: lastHist.time, value: c.close });
+          }
+          lineRef.current = mergeLineHistory(historyRef.current, tickRef.current);
         }
       }
       if (channel.includes("order_book")) {
@@ -340,6 +374,9 @@ export function DeskProvider({ children }: { children: ReactNode }) {
     setFlagsState((f) => ({ ...f, loading: true }));
     lineRef.current = [];
     indexRef.current = [];
+    historyRef.current = [];
+    tickRef.current = [];
+    indexTickRef.current = [];
     setLine([]);
     setIndexLine([]);
     liveCandleRef.current = undefined;
@@ -348,9 +385,11 @@ export function DeskProvider({ children }: { children: ReactNode }) {
     setHover(null);
   }, []);
 
+  const spec = candleSpec(windowSecs);
+
   useEffect(() => {
     let cancelled = false;
-    fetchCandles(marketId, "1m")
+    fetchCandles(marketId, spec.resolution, windowSecs)
       .then((cs) => {
         if (cancelled) return;
         const committed = cs.slice(0, -1);
@@ -359,10 +398,14 @@ export function DeskProvider({ children }: { children: ReactNode }) {
         setCandles(committed);
         setLiveCandle(live);
         if (cs.length) {
-          const seeded = cs.map((c) => ({ time: c.time, value: c.close }));
-          lineRef.current = seeded.slice(-LINE_CAP);
-          indexRef.current = [];
+          historyRef.current = closesFromCandles(cs);
+          const lastHist = historyRef.current[historyRef.current.length - 1]?.time ?? 0;
+          tickRef.current = tickRef.current.filter((p) => p.time >= lastHist);
+          indexTickRef.current = indexTickRef.current.filter((p) => p.time >= lastHist);
+          lineRef.current = mergeLineHistory(historyRef.current, tickRef.current);
+          indexRef.current = mergeLineHistory([], indexTickRef.current);
           setLine(lineRef.current);
+          setIndexLine(indexRef.current);
         }
         setFlagsState((f) => ({ ...f, loading: false }));
       })
@@ -372,19 +415,19 @@ export function DeskProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [marketId]);
+  }, [marketId, spec.resolution, windowSecs]);
 
   useEffect(() => {
     const sock = socketRef.current;
     if (!sock) return;
-    const next = `candle/${marketId}/1m`;
+    const next = `candle/${marketId}/${spec.resolution}`;
     if (candleCh.current && candleCh.current !== next) sock.unsubscribe(candleCh.current);
     sock.subscribe(next);
     candleCh.current = next;
     return () => {
       if (candleCh.current) sock.unsubscribe(candleCh.current);
     };
-  }, [marketId, wsStatus]);
+  }, [marketId, spec.resolution, wsStatus]);
 
   useEffect(() => {
     const sock = socketRef.current;
@@ -509,6 +552,11 @@ export function DeskProvider({ children }: { children: ReactNode }) {
     return () => window.clearInterval(id);
   }, []);
 
+  const setWindowSecs = useCallback((n: number) => {
+    const match = DESK_WINDOWS.find((w) => w.secs === n);
+    setWindowSecsState(match?.secs ?? 300);
+  }, []);
+
   const setFlags = useCallback((patch: Partial<LivelineFlags>) => {
     setFlagsState((f) => ({ ...f, ...patch }));
   }, []);
@@ -583,7 +631,7 @@ export function DeskProvider({ children }: { children: ReactNode }) {
     indexLine,
     candles,
     liveCandle,
-    candleWidth: 60,
+    candleWidth: spec.candleWidth,
     chartMode,
     setChartMode,
     windowSecs,
@@ -625,4 +673,4 @@ function marksFrom(stats: Record<number, MarketStats>) {
   return marks;
 }
 
-export { defaultFlags, LINE_WINDOWS, CANDLE_WINDOWS, MAX_LEVERAGE, liqPrice };
+export { defaultFlags, DESK_WINDOWS, LINE_WINDOWS, CANDLE_WINDOWS, MAX_LEVERAGE, liqPrice };

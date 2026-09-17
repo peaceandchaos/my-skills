@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { compactUsd, fmtBps, fmtInt, fmtMs, fmtPct, usd } from "./format";
+import { compactUsd, fmtBps, fmtChartTime, fmtInt, fmtMs, fmtPct, usd } from "./format";
 
 test("usd pins two-decimal cash", () => {
   assert.equal(usd(0), "$0.00");
@@ -27,6 +27,13 @@ test("fmtInt is a grouping integer", () => {
   assert.equal(fmtInt(0), "0");
   assert.equal(fmtInt(12), "12");
   assert.equal(fmtInt(1200), "1,200");
+});
+
+test("fmtChartTime coarsens the axis on hour and month windows", () => {
+  const ts = Date.UTC(2026, 8, 17, 18, 45, 12) / 1000;
+  assert.equal(fmtChartTime(ts, 60).split(":").length, 3);
+  assert.equal(fmtChartTime(ts, 3600).includes(":"), true);
+  assert.match(fmtChartTime(ts, 30 * 24 * 3600), /[A-Za-z]/);
 });
 
 test("fmtBps and fmtMs keep their units", () => {

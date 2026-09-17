@@ -3,7 +3,7 @@
 import { useMemo, useState, type MouseEvent } from "react";
 import { Liveline, type CandlePoint, type HoverPoint, type ReferenceLine } from "liveline";
 import { ChartSettings } from "@/components/desk/ChartSettings";
-import { CANDLE_WINDOWS, LINE_WINDOWS, liqPrice, useDesk } from "@/components/desk/DeskProvider";
+import { DESK_WINDOWS, liqPrice, useDesk } from "@/components/desk/DeskProvider";
 import { TvTooltip } from "@/components/desk/TvTooltip";
 import { DashboardCard, DashboardCardTitle } from "@/components/dashboard-card";
 import { Delta, DeltaIcon, DeltaValue } from "@/components/delta";
@@ -13,7 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { compactUsd, fmtPrice } from "@/lib/format";
+import { compactUsd, fmtChartTime, fmtPrice } from "@/lib/format";
 
 const LIVELINE_PAD_LEFT = 52;
 const LIVELINE_PAD_RIGHT = 16;
@@ -46,7 +46,7 @@ export function LiveChart() {
   } = desk;
 
   const value = line[line.length - 1]?.value ?? mark;
-  const windows = chartMode === "candle" ? CANDLE_WINDOWS : LINE_WINDOWS;
+  const windows = DESK_WINDOWS;
   const changePct = market ? (stats[marketId]?.dailyChange ?? 0) : 0;
   const hasSeries = line.length > 0 || candles.length > 0 || Boolean(liveCandle);
   const chartLoading = flags.loading && !hasSeries && wsStatus === "connecting";
@@ -200,6 +200,7 @@ export function LiveChart() {
           onModeChange={setChartMode}
           onHover={setHover}
           formatValue={(v) => fmtPrice(v, market?.priceDecimals ?? 2)}
+          formatTime={(t) => fmtChartTime(t, windowSecs)}
           emptyText={emptyText}
         />
         <TvTooltip

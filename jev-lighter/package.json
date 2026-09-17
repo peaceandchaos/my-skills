@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test src/lib/format.test.ts src/lib/jev/mock.test.ts src/lib/paper/broker.test.ts src/lib/lighter/config.test.ts",
+    "test": "tsx --test src/lib/format.test.ts src/lib/jev/mock.test.ts src/lib/paper/broker.test.ts src/lib/lighter/config.test.ts src/lib/lighter/series.test.ts",
     "deploy": "next build && wrangler deploy"
   },
   "dependencies": {

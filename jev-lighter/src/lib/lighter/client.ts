@@ -1,4 +1,4 @@
-import { LIGHTER_REST } from "./config";
+import { LIGHTER_REST, candleSpec, type CandleResolution } from "./config";
 import { parseMarket } from "./parse";
 import type { LighterMarket } from "@/lib/types";
 import type { CandlePoint } from "liveline";
@@ -20,11 +20,13 @@ export async function fetchMarkets(): Promise<LighterMarket[]> {
 
 export async function fetchCandles(
   marketId: number,
-  resolution = "1m",
+  resolution: CandleResolution,
+  windowSecs: number,
 ): Promise<CandlePoint[]> {
+  const { candleWidth } = candleSpec(windowSecs);
   const now = Date.now();
-  const hours = resolution === "1m" ? 8 : 48;
-  const start = now - hours * 60 * 60 * 1000;
+  const spanMs = Math.max(windowSecs * 4, candleWidth * 24) * 1000;
+  const start = now - spanMs;
   const upstream = new URL(`${LIGHTER_REST}/api/v1/candles`);
   upstream.searchParams.set("market_id", String(marketId));
   upstream.searchParams.set("resolution", resolution);

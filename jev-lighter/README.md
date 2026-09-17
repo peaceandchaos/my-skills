@@ -67,6 +67,6 @@ Standalone Next.js 16 app. Chrome is Efferd dashboard 6 plus the dashboard 5 ses
 | Mix | `JevMix` | Buy, hold, sell stance |
 | Tax card | `OpenPosition` | Current position or Flat |
 
-Session wallet starts at `$100` (`STARTING_CASH` in `src/lib/lighter/config.ts`). Paper fills never send a Lighter transaction. Live auto still paper-fills and says so. Chart windows come from `LINE_WINDOWS` and `CANDLE_WINDOWS`. The toolbar select is their unique union, `DESK_WINDOWS`.
+Session wallet starts at `$100` (`STARTING_CASH` in `src/lib/lighter/config.ts`). Paper fills never send a Lighter transaction. Live auto still paper-fills and says so. Chart windows are one Liveline list, `DESK_WINDOWS`: 1m, 5m, 15m, 1h, and Month. Candle resolution follows the selected window.
 
 `TYPESAFE_AI_API_KEY` is reserved for swapping `mockDecide` in `src/lib/jev/mock.ts` to TypeSafe Jev. The mock stays until that key is present.

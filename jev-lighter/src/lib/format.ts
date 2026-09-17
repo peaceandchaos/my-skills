@@ -54,6 +54,21 @@ export function fmtTime(tsSec: number) {
   });
 }
 
+export function fmtChartTime(tsSec: number, windowSecs: number) {
+  const d = new Date(tsSec * 1000);
+  if (windowSecs >= 86_400) {
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  }
+  if (windowSecs >= 3600) {
+    return d.toLocaleTimeString("en-US", {
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+  return fmtTime(tsSec);
+}
+
 export function fmtDate(tsMs: number) {
   return new Date(tsMs).toLocaleString("en-US", {
     month: "long",
