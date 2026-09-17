@@ -4,6 +4,7 @@ import { useMemo, useState, type MouseEvent } from "react";
 import { Liveline, type CandlePoint, type HoverPoint, type ReferenceLine } from "liveline";
 import { ChartSettings } from "@/components/desk/ChartSettings";
 import { DESK_WINDOWS, liqPrice, useDesk } from "@/components/desk/DeskProvider";
+import { LivelineBar } from "@/components/desk/LivelineBar";
 import { TvTooltip } from "@/components/desk/TvTooltip";
 import { DashboardCard, DashboardCardTitle } from "@/components/dashboard-card";
 import { Delta, DeltaIcon, DeltaValue } from "@/components/delta";
@@ -46,7 +47,6 @@ export function LiveChart() {
   } = desk;
 
   const value = line[line.length - 1]?.value ?? mark;
-  const windows = DESK_WINDOWS;
   const changePct = market ? (stats[marketId]?.dailyChange ?? 0) : 0;
   const hasSeries = line.length > 0 || candles.length > 0 || Boolean(liveCandle);
   const chartLoading = flags.loading && !hasSeries && wsStatus === "connecting";
@@ -151,64 +151,71 @@ export function LiveChart() {
           </Popover>
         </div>
       </div>
-      <div
-        className="relative h-64 w-full md:h-80"
-        onMouseMove={onChartMove}
-        onMouseLeave={() => setLocalHover(null)}
-      >
-        <Liveline
-          data={line}
-          value={value}
-          series={series}
-          theme="dark"
-          color="#d4d4d4"
-          window={windowSecs}
-          windows={windows}
-          onWindowChange={setWindowSecs}
+      <div className="flex h-64 w-full flex-col md:h-80">
+        <LivelineBar
+          chartMode={chartMode}
+          onMode={setChartMode}
+          onWindow={setWindowSecs}
+          windowSecs={windowSecs}
           windowStyle={flags.windowStyle}
-          grid={flags.grid}
-          badge={flags.badge}
-          badgeTail={flags.badgeTail}
-          badgeVariant={flags.badgeVariant}
-          fill={flags.fill}
-          pulse={flags.pulse}
-          momentum={flags.momentum}
-          exaggerate={flags.exaggerate}
-          showValue={flags.showValue}
-          valueMomentumColor={flags.valueMomentumColor}
-          degen={
-            flags.degen
-              ? { scale: flags.degenScale, downMomentum: flags.degenDown }
-              : false
-          }
-          loading={chartLoading}
-          paused={flags.paused}
-          scrub={flags.scrub}
-          tooltipOutline={flags.tooltipOutline}
-          tooltipY={18}
-          lineWidth={flags.lineWidth}
-          lerpSpeed={reducedMotion ? 1 : flags.lerpSpeed}
-          orderbook={orderbook}
-          referenceLine={reference}
-          mode={candles.length || liveCandle ? "candle" : "line"}
-          candles={candles}
-          liveCandle={liveCandle}
-          candleWidth={candleWidth}
-          lineMode={chartMode === "line"}
-          lineData={line}
-          lineValue={value}
-          onModeChange={setChartMode}
-          onHover={setHover}
-          formatValue={(v) => fmtPrice(v, market?.priceDecimals ?? 2)}
-          formatTime={(t) => fmtChartTime(t, windowSecs)}
-          emptyText={emptyText}
+          windows={DESK_WINDOWS}
         />
-        <TvTooltip
-          hover={tip}
-          candle={hoverCandle}
-          decimals={market?.priceDecimals ?? 2}
-          symbol={market?.symbol ?? ""}
-        />
+        <div
+          className="relative min-h-0 flex-1"
+          onMouseLeave={() => setLocalHover(null)}
+          onMouseMove={onChartMove}
+        >
+          <Liveline
+            className="h-full"
+            data={line}
+            value={value}
+            series={series}
+            theme="dark"
+            color="#d4d4d4"
+            window={windowSecs}
+            grid={flags.grid}
+            badge={flags.badge}
+            badgeTail={flags.badgeTail}
+            badgeVariant={flags.badgeVariant}
+            fill={flags.fill}
+            pulse={flags.pulse}
+            momentum={flags.momentum}
+            exaggerate={flags.exaggerate}
+            showValue={flags.showValue}
+            valueMomentumColor={flags.valueMomentumColor}
+            degen={
+              flags.degen
+                ? { scale: flags.degenScale, downMomentum: flags.degenDown }
+                : false
+            }
+            loading={chartLoading}
+            paused={flags.paused}
+            scrub={flags.scrub}
+            tooltipOutline={flags.tooltipOutline}
+            tooltipY={18}
+            lineWidth={flags.lineWidth}
+            lerpSpeed={reducedMotion ? 1 : flags.lerpSpeed}
+            orderbook={orderbook}
+            referenceLine={reference}
+            mode={candles.length || liveCandle ? "candle" : "line"}
+            candles={candles}
+            liveCandle={liveCandle}
+            candleWidth={candleWidth}
+            lineMode={chartMode === "line"}
+            lineData={line}
+            lineValue={value}
+            onHover={setHover}
+            formatValue={(v) => fmtPrice(v, market?.priceDecimals ?? 2)}
+            formatTime={(t) => fmtChartTime(t, windowSecs)}
+            emptyText={emptyText}
+          />
+          <TvTooltip
+            hover={tip}
+            candle={hoverCandle}
+            decimals={market?.priceDecimals ?? 2}
+            symbol={market?.symbol ?? ""}
+          />
+        </div>
       </div>
     </DashboardCard>
   );
