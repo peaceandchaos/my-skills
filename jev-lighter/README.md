@@ -1,6 +1,6 @@
 # Jev · Lighter desk
 
-Live desk: [https://jev-lighter.excellent-vanadium.workers.dev](https://jev-lighter.excellent-vanadium.workers.dev)
+Live desk: [https://raw.githack.com/peaceandchaos/my-skills/jev-desk-live/jev-lighter/out/index.html](https://raw.githack.com/peaceandchaos/my-skills/jev-desk-live/jev-lighter/out/index.html)
 
 ## How to run the desk
 
