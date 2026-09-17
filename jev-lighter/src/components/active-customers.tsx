@@ -87,12 +87,14 @@ export function ActiveCustomers() {
 		})),
 	];
 
-	const dominant: { percent: number; at: number } | null =
+	const dominant =
 		buyPercent >= holdPercent && buyPercent >= sellPercent
 			? { percent: buyPercent, at: (buyLines / LINE_COUNT) * 100 }
 			: sellPercent >= holdPercent
 				? { percent: sellPercent, at: ((buyLines + holdLines) / LINE_COUNT) * 100 }
 				: { percent: holdPercent, at: ((buyLines + holdLines) / LINE_COUNT) * 100 };
+	const labelLeft =
+		dominant.percent >= 99 ? 50 : Math.min(Math.max(dominant.at, 8), 92);
 
 	const summary = `Buy ${formatPercent(buyPercent, 1)}, hold ${formatPercent(holdPercent, 1)}, sell ${formatPercent(sellPercent, 1)}`;
 
@@ -110,11 +112,11 @@ export function ActiveCustomers() {
 			</p>
 
 			<div className="relative pt-5">
-				{dominant && dominant.percent > 40 ? (
+				{dominant.percent > 40 ? (
 					<div
 						aria-hidden="true"
 						className="pointer-events-none absolute top-0 z-10 -translate-x-1/2"
-						style={{ left: `${dominant.at}%` }}
+						style={{ left: `${labelLeft}%` }}
 					>
 						<div className="flex flex-col items-center">
 							<span className="font-medium text-foreground text-xs tabular-nums">

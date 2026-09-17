@@ -1,7 +1,7 @@
 export const DASHBOARD_LOCALE = "en-US";
 export const DASHBOARD_CURRENCY = "USD";
 
-/** Noon anchor avoids off-by-one labels around timezone boundaries for ISO date strings. */
+/** Noon local calendar date. Midnight ISO strings shift the calendar day around UTC. */
 export function parseIsoCalendarDate(isoDate: string): Date {
 	return new Date(`${isoDate}T12:00:00`);
 }
@@ -26,7 +26,6 @@ export function formatDate(isoDate: string, style: DashboardDateStyle): string {
 	});
 }
 
-/** X-axis for range charts: weekday when showing ~a week, otherwise month + day. */
 export function formatChartAxisTick(
 	isoDate: string,
 	periodDays: number
@@ -40,7 +39,6 @@ export function formatChartAxisTick(
 
 export type ChartTooltipWeekdayStyle = "short" | "long";
 
-/** Tooltip label for a chart point (weekday + month + day). */
 export function formatChartTooltipDate(
 	isoDate: string,
 	weekdayStyle: ChartTooltipWeekdayStyle = "short"
@@ -53,7 +51,6 @@ export function formatChartTooltipDate(
 	});
 }
 
-/** Whole-dollar USD (KPIs, headlines). */
 export function formatCurrency(value: number) {
 	return new Intl.NumberFormat(DASHBOARD_LOCALE, {
 		currency: DASHBOARD_CURRENCY,
@@ -75,7 +72,6 @@ export function formatCompactCurrency(
 	}).format(value);
 }
 
-/** Full-precision USD (e.g. average order value). */
 export function formatFullCurrency(value: number) {
 	return new Intl.NumberFormat(DASHBOARD_LOCALE, {
 		currency: DASHBOARD_CURRENCY,
@@ -92,14 +88,12 @@ export function formatCompactNumber(value: number) {
 	}).format(value);
 }
 
-/** Whole numbers with grouping (visits, sessions, counts). */
 export function formatInteger(value: number) {
 	return new Intl.NumberFormat(DASHBOARD_LOCALE, {
 		maximumFractionDigits: 0,
 	}).format(value);
 }
 
-/** Percentage with fixed decimal places (e.g. conversion rate). */
 export function formatPercent(value: number, fractionDigits = 2) {
 	return `${value.toFixed(fractionDigits)}%`;
 }
