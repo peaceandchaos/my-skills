@@ -193,6 +193,7 @@ export function DeskProvider({ children }: { children: ReactNode }) {
   const bidsRef = useRef(new Map<number, number>());
   const asksRef = useRef(new Map<number, number>());
   const lastSideRef = useRef<JevVerdict["side"] | null>(null);
+  const liveCandleRef = useRef<CandlePoint | undefined>(undefined);
 
   useEffect(() => {
     statsRef.current = stats;
@@ -300,12 +301,12 @@ export function DeskProvider({ children }: { children: ReactNode }) {
             low: last.l,
             close: last.c,
           };
-          setLiveCandle((prev) => {
-            if (prev && prev.time !== c.time) {
-              setCandles((cs) => cs.concat(prev).slice(-800));
-            }
-            return c;
-          });
+          const prevLive = liveCandleRef.current;
+          liveCandleRef.current = c;
+          setLiveCandle(c);
+          if (prevLive && prevLive.time !== c.time) {
+            setCandles((cs) => cs.concat(prevLive).slice(-800));
+          }
         }
       }
       if (channel.includes("order_book")) {
@@ -340,6 +341,7 @@ export function DeskProvider({ children }: { children: ReactNode }) {
     indexRef.current = [];
     setLine([]);
     setIndexLine([]);
+    liveCandleRef.current = undefined;
     setCandles([]);
     setLiveCandle(undefined);
     setHover(null);
@@ -352,6 +354,7 @@ export function DeskProvider({ children }: { children: ReactNode }) {
         if (cancelled) return;
         const committed = cs.slice(0, -1);
         const live = cs[cs.length - 1];
+        liveCandleRef.current = live;
         setCandles(committed);
         setLiveCandle(live);
         if (cs.length) {
@@ -377,6 +380,9 @@ export function DeskProvider({ children }: { children: ReactNode }) {
     if (candleCh.current && candleCh.current !== next) sock.unsubscribe(candleCh.current);
     sock.subscribe(next);
     candleCh.current = next;
+    return () => {
+      if (candleCh.current) sock.unsubscribe(candleCh.current);
+    };
   }, [marketId, wsStatus]);
 
   useEffect(() => {
@@ -391,6 +397,9 @@ export function DeskProvider({ children }: { children: ReactNode }) {
       sock.unsubscribe(bookCh.current);
       bookCh.current = null;
     }
+    return () => {
+      if (bookCh.current) sock.unsubscribe(bookCh.current);
+    };
   }, [marketId, flags.orderbook, wsStatus]);
 
   useEffect(() => {
@@ -456,42 +465,40 @@ export function DeskProvider({ children }: { children: ReactNode }) {
         !decision.skipped &&
         fireSide !== null &&
         (mode === "paper" || mode === "live");
+      let next = recordJev(
+        accountRef.current,
+        fireSide
+          ? {
+              at: Date.now(),
+              side: fireSide,
+              mark: s.markPrice,
+              marketId: mkt.marketId,
+              resolveAt: Date.now() + JEV_HORIZON_MS,
+            }
+          : null,
+      );
       let executed = false;
-      setAccount((a) => {
-        let next = recordJev(
-          a,
-          fireSide
-            ? {
-                at: Date.now(),
-                side: fireSide,
-                mark: s.markPrice,
-                marketId: mkt.marketId,
-                resolveAt: Date.now() + JEV_HORIZON_MS,
-              }
-            : null,
-        );
-        if (shouldFire && fireSide) {
-          const placed = place(next, {
-            marketId: mkt.marketId,
-            symbol: mkt.symbol,
-            side: fireSide,
-            type: "market",
-            quoteUsd: Math.max(mkt.minQuote, DEFAULT_ORDER_USD),
-            leverage: 3,
-            mark: s.markPrice,
-            feeBps: mkt.takerFee * 1e4,
-            source: "jev",
-            minQuote: mkt.minQuote,
-          });
-          if (!placed.error) {
-            next = placed.account;
-            executed = true;
-          } else {
-            setLastError(placed.error);
-          }
+      if (shouldFire && fireSide) {
+        const placed = place(next, {
+          marketId: mkt.marketId,
+          symbol: mkt.symbol,
+          side: fireSide,
+          type: "market",
+          quoteUsd: Math.max(mkt.minQuote, DEFAULT_ORDER_USD),
+          leverage: 3,
+          mark: s.markPrice,
+          feeBps: mkt.takerFee * 1e4,
+          source: "jev",
+          minQuote: mkt.minQuote,
+        });
+        if (placed.error) {
+          setLastError(placed.error);
+        } else {
+          next = placed.account;
+          executed = true;
         }
-        return next;
-      });
+      }
+      setAccount(next);
       setJev({
         at: Date.now(),
         marketId: mkt.marketId,
