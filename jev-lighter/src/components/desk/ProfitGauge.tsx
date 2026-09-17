@@ -3,6 +3,17 @@
 import { useDesk } from "@/components/desk/DeskProvider";
 import { usd } from "@/lib/format";
 
+const TICKS = Array.from({ length: 48 }, (_, i) => {
+  const a = (-220 + (i / 47) * 260) * (Math.PI / 180);
+  const r = (n: number) => Math.round(n * 100) / 100;
+  return {
+    x1: r(84 + Math.cos(a) * 62),
+    y1: r(84 + Math.sin(a) * 62),
+    x2: r(84 + Math.cos(a) * 74),
+    y2: r(84 + Math.sin(a) * 74),
+  };
+});
+
 export function ProfitGauge() {
   const { account, uPnL } = useDesk();
   const realized = account.realizedPnl;
@@ -10,26 +21,20 @@ export function ProfitGauge() {
   const total = realized + unreal;
   const mag = Math.max(Math.abs(realized) + Math.abs(unreal), 1);
   const rFrac = Math.abs(realized) / mag;
-  const ticks = 48;
 
   return (
     <section className="rounded-2xl border border-white/6 bg-[#111] px-5 py-5">
       <div className="relative mx-auto h-[168px] w-[168px]">
         <svg viewBox="0 0 168 168" className="h-full w-full">
-          {Array.from({ length: ticks }).map((_, i) => {
-            const a = (-220 + (i / (ticks - 1)) * 260) * (Math.PI / 180);
-            const x1 = 84 + Math.cos(a) * 62;
-            const y1 = 84 + Math.sin(a) * 62;
-            const x2 = 84 + Math.cos(a) * 74;
-            const y2 = 84 + Math.sin(a) * 74;
-            const on = i < Math.max(3, Math.round(rFrac * ticks));
+          {TICKS.map((t, i) => {
+            const on = i < Math.max(3, Math.round(rFrac * TICKS.length));
             return (
               <line
                 key={i}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
+                x1={t.x1}
+                y1={t.y1}
+                x2={t.x2}
+                y2={t.y2}
                 stroke={on ? "rgba(255,255,255,0.82)" : "rgba(255,255,255,0.12)"}
                 strokeWidth={3}
                 strokeLinecap="round"

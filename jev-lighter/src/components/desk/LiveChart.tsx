@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Liveline, type CandlePoint, type ReferenceLine } from "liveline";
+import { useMemo, useState, type MouseEvent } from "react";
+import { Liveline, type CandlePoint, type HoverPoint, type ReferenceLine } from "liveline";
 import { ChartSettings } from "@/components/desk/ChartSettings";
 import { CANDLE_WINDOWS, LINE_WINDOWS, liqPrice, useDesk } from "@/components/desk/DeskProvider";
 import { TvTooltip } from "@/components/desk/TvTooltip";
@@ -51,20 +51,47 @@ export function LiveChart() {
     return undefined;
   }, [currentPos, flags.reference, market]);
 
+  const [localHover, setLocalHover] = useState<HoverPoint | null>(null);
+  const tip = localHover ?? hover;
+
+  function onChartMove(e: MouseEvent<HTMLDivElement>) {
+    if (!line.length) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const padL = 52;
+    const padR = 16;
+    const chartW = Math.max(1, rect.width - padL - padR);
+    const frac = Math.min(1, Math.max(0, (x - padL) / chartW));
+    const tEnd = line[line.length - 1].time;
+    const tStart = tEnd - windowSecs;
+    const t = tStart + frac * windowSecs;
+    let best = line[0];
+    let dist = Math.abs(best.time - t);
+    for (const p of line) {
+      const d = Math.abs(p.time - t);
+      if (d < dist) {
+        dist = d;
+        best = p;
+      }
+    }
+    setLocalHover({ time: best.time, value: best.value, x, y });
+  }
+
   const hoverCandle: CandlePoint | undefined = useMemo(() => {
-    if (chartMode !== "candle" || !hover) return undefined;
+    if (chartMode !== "candle" || !tip) return undefined;
     const all = liveCandle ? candles.concat(liveCandle) : candles;
     let best: CandlePoint | undefined;
     let dist = Infinity;
     for (const c of all) {
-      const d = Math.abs(c.time - hover.time);
+      const d = Math.abs(c.time - tip.time);
       if (d < dist) {
         dist = d;
         best = c;
       }
     }
     return dist <= candleWidth * 1.5 ? best : undefined;
-  }, [chartMode, hover, candles, liveCandle, candleWidth]);
+  }, [chartMode, tip, candles, liveCandle, candleWidth]);
 
   const series = flags.compareIndex
     ? [
@@ -109,7 +136,11 @@ export function LiveChart() {
           </button>
         </div>
       </div>
-      <div className="relative h-[320px] md:h-[360px]">
+      <div
+        className="relative h-[320px] md:h-[360px]"
+        onMouseMove={onChartMove}
+        onMouseLeave={() => setLocalHover(null)}
+      >
         <Liveline
           data={line}
           value={value}
@@ -157,7 +188,7 @@ export function LiveChart() {
           emptyText="Waiting for Lighter"
         />
         <TvTooltip
-          hover={hover}
+          hover={tip}
           candle={hoverCandle}
           decimals={market?.priceDecimals ?? 2}
           symbol={market?.symbol ?? ""}

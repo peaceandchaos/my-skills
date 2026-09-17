@@ -52,7 +52,9 @@ function Row({ k, v }: { k: string; v: string }) {
   return (
     <div className="flex items-center justify-between gap-3">
       <dt className="text-white/45">{k}</dt>
-      <dd className="font-mono text-[13px]">{v}</dd>
+      <dd className="font-mono text-[13px]" suppressHydrationWarning>
+        {v}
+      </dd>
     </div>
   );
 }

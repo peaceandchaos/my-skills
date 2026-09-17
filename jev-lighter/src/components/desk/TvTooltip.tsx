@@ -17,14 +17,7 @@ export function TvTooltip({
   if (!hover) return null;
   const ohlc = candle;
   return (
-    <div
-      className="pointer-events-none absolute z-20 min-w-[168px] rounded-lg border border-white/10 bg-[#141414]/95 px-3 py-2 text-[12px] shadow-xl backdrop-blur-sm motion-safe:transition-opacity motion-safe:duration-150"
-      style={{
-        left: Math.max(8, hover.x + 12),
-        top: Math.max(8, hover.y - 12),
-        opacity: 1,
-      }}
-    >
+    <div className="pointer-events-none absolute left-3 top-12 z-20 min-w-[196px] rounded-lg border border-white/10 bg-[#141414]/95 px-3 py-2 text-[12px] shadow-xl backdrop-blur-sm">
       <div className="flex items-center justify-between gap-4 text-white/45">
         <span>{symbol}</span>
         <span className="font-mono">{fmtTime(hover.time)}</span>

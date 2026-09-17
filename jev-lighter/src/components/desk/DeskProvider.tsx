@@ -160,7 +160,7 @@ export function DeskProvider({ children }: { children: ReactNode }) {
   const [candles, setCandles] = useState<CandlePoint[]>([]);
   const [liveCandle, setLiveCandle] = useState<CandlePoint | undefined>();
   const [chartMode, setChartMode] = useState<ChartMode>("line");
-  const [windowSecs, setWindowSecs] = useState(60);
+  const [windowSecs, setWindowSecs] = useState(300);
   const [flags, setFlagsState] = useState<LivelineFlags>(defaultFlags);
   const [hover, setHover] = useState<HoverPoint | null>(null);
   const [orderbook, setOrderbook] = useState<OrderbookData | undefined>();

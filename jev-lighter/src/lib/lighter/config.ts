@@ -15,10 +15,10 @@ export const LINE_CAP = 2400;
 export const PAPER_SLIP_BPS = [0.4, 2.2] as const;
 
 export const LINE_WINDOWS = [
-  { label: "30s", secs: 30 },
-  { label: "1m", secs: 60 },
   { label: "5m", secs: 300 },
   { label: "15m", secs: 900 },
+  { label: "1m", secs: 60 },
+  { label: "30s", secs: 30 },
 ];
 
 export const CANDLE_WINDOWS = [
