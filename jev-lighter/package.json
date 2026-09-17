@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/relative-assets.mjs",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "test": "tsx --test src/lib/format.test.ts src/lib/jev/mock.test.ts src/lib/paper/broker.test.ts src/lib/lighter/config.test.ts",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "next build && wrangler deploy"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

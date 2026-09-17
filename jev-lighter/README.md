@@ -1,6 +1,6 @@
 # Jev · Lighter desk
 
-Live desk: [https://raw.githack.com/peaceandchaos/my-skills/jev-desk-live/jev-lighter/out/index.html](https://raw.githack.com/peaceandchaos/my-skills/jev-desk-live/jev-lighter/out/index.html)
+Live desk: [https://jev-lighter.surge.sh](https://jev-lighter.surge.sh)
 
 ## How to run the desk
 
