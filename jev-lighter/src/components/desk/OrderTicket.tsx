@@ -94,23 +94,31 @@ export function OrderTicket() {
           />
         </label>
       ) : null}
-      <div className="grid grid-cols-2 gap-2">
-        <label className="flex flex-col gap-1.5 text-muted-foreground text-xs">
-          SL
-          <Input onChange={(e) => setTicket({ sl: e.target.value })} value={ticket.sl} />
+      <details
+        className="group"
+        open={Boolean(ticket.sl || ticket.tp || ticket.reduceOnly)}
+      >
+        <summary className="cursor-pointer text-muted-foreground text-xs">
+          Stops and reduce-only
+        </summary>
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <label className="flex flex-col gap-1.5 text-muted-foreground text-xs">
+            SL
+            <Input onChange={(e) => setTicket({ sl: e.target.value })} value={ticket.sl} />
+          </label>
+          <label className="flex flex-col gap-1.5 text-muted-foreground text-xs">
+            TP
+            <Input onChange={(e) => setTicket({ tp: e.target.value })} value={ticket.tp} />
+          </label>
+        </div>
+        <label className="mt-2 flex items-center gap-2 text-sm">
+          <Checkbox
+            checked={ticket.reduceOnly}
+            onCheckedChange={(v) => setTicket({ reduceOnly: v === true })}
+          />
+          Reduce only
         </label>
-        <label className="flex flex-col gap-1.5 text-muted-foreground text-xs">
-          TP
-          <Input onChange={(e) => setTicket({ tp: e.target.value })} value={ticket.tp} />
-        </label>
-      </div>
-      <label className="flex items-center gap-2 text-sm">
-        <Checkbox
-          checked={ticket.reduceOnly}
-          onCheckedChange={(v) => setTicket({ reduceOnly: v === true })}
-        />
-        Reduce only
-      </label>
+      </details>
       {lastError ? <div className="text-amber-500 text-xs">{lastError}</div> : null}
       <Button
         className="w-full"

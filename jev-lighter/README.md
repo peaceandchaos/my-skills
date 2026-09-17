@@ -1,34 +1,40 @@
 # Jev · Lighter desk
 
-A testing dashboard: live Lighter mark data, a Liveline chart, and a TypeSafe-style Jev loop (gate + buy/sell/hold) that can paper-trade a few bucks.
+## How to run the desk
 
-The chrome is Efferd dashboard 6 (shadcn cards, separators, 52-tick profit gauge) plus dashboard 5 session vitals. Dashboard 6 is Pro on the registry, so those blocks are ported, not `shadcn add @efferd/dashboard-6`.
-
-This folder is a standalone Next.js app. It currently lives inside `peaceandchaos/my-skills` so Cloud Agents can ship it. Extract it to its own repo when you want.
-
-## Run
+1. Install dependencies.
 
 ```bash
 cd jev-lighter
 npm install
+```
+
+2. Start the Next.js app.
+
+```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+3. Open http://localhost:3000. You should see the toolbar, a Liveline wallet chart, and a Buy or Sell ticket.
 
-## What v1 does
+4. Wait until the toolbar says **Lighter mark**. Submit a paper buy. Flatten when you want the session flat again.
 
-- All active Lighter perps, picker sorted by 24h quote volume (BTC default).
-- Live mark via Lighter websocket; 1m candles via REST.
-- Liveline line ↔ candle morph, TradingView-style hover card, and a **Chart** panel for every Liveline flag (degen, exaggerate, orderbook overlay, mark vs index, …).
-- Session wallet starts at **$100**. Ticket: market/limit, 1–5x isolated, SL/TP, reduce-only, flatten.
-- Modes: **Advisory** (Jev talks), **Paper auto** (Jev fires ~every 2s when the gate passes), **Live auto** (same fills until WASM signing is wired).
-- Layout: win rate, all-time session orders, AOV, wallet Liveline, session vitals (latency / fee bps / slippage), ticket. Right rail: profit gauge (realized vs unrealized), Jev stance mix, open position.
+`npm test` runs the paper broker, Jev mock, formatter, and window-list pins. `npx tsc --noEmit` and `npm run lint` check the app.
 
-## Money
+## Desk
 
-Paper fills never touch Lighter. Live signing is **not** enabled in this PR — turning on Live auto still paper-fills and says so. No keys required for the desk.
+Standalone Next.js 16 app. Chrome is Efferd dashboard 6 plus the dashboard 5 session-vitals card. Dashboard 6 is Pro on the registry, so those blocks are ported. Do not run `shadcn add @efferd/dashboard-6` without a token.
 
-## Env (optional, later)
+| Slot | Component | Role |
+| --- | --- | --- |
+| Stats | `DashboardStats` | Win rate, session orders, AOV |
+| MOR | `LiveChart` | Liveline wallet, line or candle |
+| Vitals | `WebVitals` | Jev latency, fee bps, slippage |
+| Orders chart | `OrderTicket` | Market or limit ticket |
+| Gauge | `ProfitGauge` | Realized vs unrealized |
+| Mix | `JevMix` | Buy, hold, sell stance |
+| Tax card | `OpenPosition` | Current position or Flat |
 
-`TYPESAFE_AI_API_KEY` is reserved for swapping `/api/jev` from the mock classifier to TypeSafe Jev. The mock stays until that key is present.
+Session wallet starts at `$100` (`STARTING_CASH` in `src/lib/lighter/config.ts`). Paper fills never send a Lighter transaction. Live auto still paper-fills and says so. Chart windows come from `LINE_WINDOWS` and `CANDLE_WINDOWS`. The toolbar select is their unique union, `DESK_WINDOWS`.
+
+`TYPESAFE_AI_API_KEY` is reserved for swapping `/api/jev` from `src/lib/jev/mock.ts` to TypeSafe Jev. The mock stays until that key is present.
