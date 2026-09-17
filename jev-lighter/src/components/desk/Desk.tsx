@@ -3,12 +3,12 @@
 import { DeskProvider } from "@/components/desk/DeskProvider";
 import { LiveChart } from "@/components/desk/LiveChart";
 import { OrderTicket } from "@/components/desk/OrderTicket";
-import { ActiveCustomers } from "@/components/active-customers";
 import { DashboardCardSeparator } from "@/components/dashboard-card";
-import { FedIncomeTax } from "@/components/fed-income-tax";
+import { JevMix } from "@/components/jev-mix";
+import { OpenPosition } from "@/components/open-position";
+import { ProfitGauge } from "@/components/profit-gauge";
 import { DashboardStats } from "@/components/stats";
 import { TopToolbar } from "@/components/top-toolbar";
-import { TotalRevenue } from "@/components/total-revenue";
 import { WebVitals } from "@/components/web-vitals";
 import { cn } from "@/lib/utils";
 
@@ -43,11 +43,11 @@ export function Desk() {
                 className="block lg:hidden"
                 orientation="horizontal"
               />
-              <TotalRevenue />
+              <ProfitGauge />
               <DashboardCardSeparator />
-              <ActiveCustomers />
+              <JevMix />
               <DashboardCardSeparator />
-              <FedIncomeTax />
+              <OpenPosition />
             </div>
           </div>
         </div>

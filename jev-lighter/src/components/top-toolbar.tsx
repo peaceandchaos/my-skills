@@ -11,24 +11,17 @@ import {
 	SelectTrigger,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { DESK_WINDOWS } from "@/lib/lighter/config";
 import { cn } from "@/lib/utils";
-
-const PERIOD_OPTIONS = [
-	{ value: 30, label: "Last 30s" },
-	{ value: 60, label: "Last 1m" },
-	{ value: 300, label: "Last 5m" },
-	{ value: 900, label: "Last 15m" },
-	{ value: 3600, label: "Last 1h" },
-	{ value: 14400, label: "Last 4h" },
-] as const;
 
 export function TopToolbar() {
 	const { wsStatus, flatten, currentPos, windowSecs, setWindowSecs } = useDesk();
-	const periodValue = PERIOD_OPTIONS.some((o) => o.value === windowSecs)
+	const periodValue = DESK_WINDOWS.some((o) => o.secs === windowSecs)
 		? String(windowSecs)
 		: "300";
-	const periodLabel =
-		PERIOD_OPTIONS.find((o) => String(o.value) === periodValue)?.label ?? "Last 5m";
+	const periodLabel = `Last ${
+		DESK_WINDOWS.find((o) => String(o.secs) === periodValue)?.label ?? "5m"
+	}`;
 
 	return (
 		<div className="flex w-full flex-col items-start justify-between gap-4 lg:flex-row">
@@ -54,9 +47,9 @@ export function TopToolbar() {
 						<span className="min-w-0 truncate">{periodLabel}</span>
 					</SelectTrigger>
 					<SelectContent align="start">
-						{PERIOD_OPTIONS.map((o) => (
-							<SelectItem key={o.value} value={String(o.value)}>
-								{o.label}
+						{DESK_WINDOWS.map((o) => (
+							<SelectItem key={o.secs} value={String(o.secs)}>
+								Last {o.label}
 							</SelectItem>
 						))}
 					</SelectContent>

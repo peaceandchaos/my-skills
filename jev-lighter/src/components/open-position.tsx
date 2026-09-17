@@ -2,12 +2,11 @@
 
 import type { ReactNode } from "react";
 import { ArrowRightIcon } from "lucide-react";
-import { formatFullCurrency } from "@/components/formater";
+import { fmtPrice, usd } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DashboardCard, DashboardCardTitle } from "@/components/dashboard-card";
 import { liqPrice, useDesk } from "@/components/desk/DeskProvider";
-import { fmtPrice } from "@/lib/format";
 import type { Position } from "@/lib/types";
 
 type Detail = {
@@ -47,12 +46,12 @@ function openRows(
 		{ label: "Side:", value: `${side} ${pos.leverage}x isolated` },
 		{
 			label: "Size:",
-			value: `${pos.base.toPrecision(4)} · ${formatFullCurrency(notional)}`,
+			value: `${pos.base.toPrecision(4)} · ${usd(notional)}`,
 		},
 		{ label: "Entry:", value: fmtPrice(pos.avgEntry, decimals) },
 		{ label: "Mark:", value: fmtPrice(mark || pos.avgEntry, decimals) },
 		{ label: "Liq:", value: fmtPrice(liq, decimals) },
-		{ label: "uPnL:", value: formatFullCurrency(uPnL) },
+		{ label: "uPnL:", value: usd(uPnL) },
 		{
 			label: "Status:",
 			value: (
@@ -75,7 +74,7 @@ function DetailRow({ label, children }: { label: string; children: ReactNode }) 
 	);
 }
 
-export function FedIncomeTax() {
+export function OpenPosition() {
 	const { currentPos, market, mark, uPnL } = useDesk();
 	const decimals = market?.priceDecimals ?? 2;
 	const liq = currentPos && market ? liqPrice(currentPos, market.mmf) : 0;

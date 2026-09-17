@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { formatFullCurrency, formatInteger, formatPercent } from "@/components/formater";
+import { fmtInt, fmtPct, usd } from "@/lib/format";
 import { Delta, DeltaIcon, DeltaValue } from "@/components/delta";
 import {
 	DashboardCard,
@@ -29,19 +29,19 @@ export function DashboardStats() {
 	const stats: readonly Stat[] = [
 		{
 			label: "Win rate",
-			value: closed ? formatPercent(winRate * 100, 1) : "—",
+			value: closed ? fmtPct(winRate, 1) : "—",
 			delta: closed ? (winRate - 0.5) * 100 : 0,
 			hint: "session round-trips",
 		},
 		{
 			label: "Orders",
-			value: formatInteger(orders),
+			value: fmtInt(orders),
 			delta: 0,
 			hint: "all-time this session",
 		},
 		{
 			label: "Average order value",
-			value: orders ? formatFullCurrency(aov) : "—",
+			value: orders ? usd(aov) : "—",
 			delta: 0,
 			hint: "all-time this session",
 		},

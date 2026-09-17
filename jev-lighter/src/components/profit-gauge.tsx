@@ -3,7 +3,7 @@
 import type { ComponentProps } from "react";
 import { ArrowRightIcon, WalletIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatFullCurrency, formatPercent } from "@/components/formater";
+import { fmtPct, usd } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { DashboardCard, DashboardCardTitle } from "@/components/dashboard-card";
 import { useDesk } from "@/components/desk/DeskProvider";
@@ -101,14 +101,14 @@ function ProfitRadialGauge({
 	);
 }
 
-export function TotalRevenue() {
+export function ProfitGauge() {
 	const { account, uPnL } = useDesk();
 	const realized = account.realizedPnl;
 	const unreal = uPnL;
 	const total = realized + unreal;
 	const mag = Math.abs(realized) + Math.abs(unreal);
 	const progress = mag > 0 ? Math.abs(realized) / mag : 0;
-	const gaugeLabel = `Realized profit share ${formatPercent(progress * 100, 1)}`;
+	const gaugeLabel = `Realized profit share ${fmtPct(progress, 1)}`;
 
 	return (
 		<DashboardCard className="gap-4">
@@ -125,7 +125,7 @@ export function TotalRevenue() {
 				<div className="relative z-10 mt-2 flex w-full flex-col items-center">
 					<DashboardCardTitle>Profit</DashboardCardTitle>
 					<span className="text-balance text-center font-medium text-foreground text-sm tabular-nums tracking-tight">
-						{formatFullCurrency(total)}
+						{usd(total)}
 					</span>
 				</div>
 			</ProfitRadialGauge>

@@ -7,14 +7,13 @@ import { CANDLE_WINDOWS, LINE_WINDOWS, liqPrice, useDesk } from "@/components/de
 import { TvTooltip } from "@/components/desk/TvTooltip";
 import { DashboardCard, DashboardCardTitle } from "@/components/dashboard-card";
 import { Delta, DeltaIcon, DeltaValue } from "@/components/delta";
-import { formatCompactCurrency } from "@/components/formater";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { fmtPrice } from "@/lib/format";
+import { compactUsd, fmtPrice } from "@/lib/format";
 
 export function LiveChart() {
   const desk = useDesk();
@@ -40,11 +39,16 @@ export function LiveChart() {
     currentPos,
     stats,
     marketId,
+    wsStatus,
   } = desk;
 
   const value = line[line.length - 1]?.value ?? mark;
   const windows = chartMode === "candle" ? CANDLE_WINDOWS : LINE_WINDOWS;
   const changePct = market ? (stats[marketId]?.dailyChange ?? 0) : 0;
+  const hasSeries = line.length > 0 || candles.length > 0 || Boolean(liveCandle);
+  const chartLoading = flags.loading && !hasSeries && wsStatus === "connecting";
+  const emptyText =
+    wsStatus === "down" ? "Lighter is down" : "Waiting for Lighter";
 
   const reference: ReferenceLine | undefined = useMemo(() => {
     if (!currentPos) return undefined;
@@ -123,7 +127,7 @@ export function LiveChart() {
       <div className="flex flex-wrap items-end justify-between gap-4 md:pe-4">
         <div className="flex flex-col items-start gap-1">
           <span className="font-semibold text-2xl tabular-nums">
-            {formatCompactCurrency(eq)}
+            {compactUsd(eq)}
           </span>
           <DashboardCardTitle>Wallet</DashboardCardTitle>
         </div>
@@ -176,7 +180,7 @@ export function LiveChart() {
               ? { scale: flags.degenScale, downMomentum: flags.degenDown }
               : false
           }
-          loading={flags.loading}
+          loading={chartLoading}
           paused={flags.paused}
           scrub={flags.scrub}
           tooltipOutline={flags.tooltipOutline}
@@ -195,7 +199,7 @@ export function LiveChart() {
           onModeChange={setChartMode}
           onHover={setHover}
           formatValue={(v) => fmtPrice(v, market?.priceDecimals ?? 2)}
-          emptyText="Waiting for Lighter"
+          emptyText={emptyText}
         />
         <TvTooltip
           hover={tip}

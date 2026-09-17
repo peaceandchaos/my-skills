@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { formatPercent } from "@/components/formater";
+import { fmtPct } from "@/lib/format";
 import { DashboardCard, DashboardCardTitle } from "@/components/dashboard-card";
 import { useDesk } from "@/components/desk/DeskProvider";
 
@@ -55,7 +55,7 @@ function StanceMixTick({
 	);
 }
 
-export function ActiveCustomers() {
+export function JevMix() {
 	const { jev } = useDesk();
 	const pBuy = jev?.pBuy ?? 0;
 	const pHold = jev?.pHold ?? 1;
@@ -96,7 +96,7 @@ export function ActiveCustomers() {
 	const labelLeft =
 		dominant.percent >= 99 ? 50 : Math.min(Math.max(dominant.at, 8), 92);
 
-	const summary = `Buy ${formatPercent(buyPercent, 1)}, hold ${formatPercent(holdPercent, 1)}, sell ${formatPercent(sellPercent, 1)}`;
+	const summary = `Buy ${fmtPct(pBuy, 1)}, hold ${fmtPct(pHold, 1)}, sell ${fmtPct(pSell, 1)}`;
 
 	return (
 		<DashboardCard className="gap-0">
@@ -120,7 +120,7 @@ export function ActiveCustomers() {
 					>
 						<div className="flex flex-col items-center">
 							<span className="font-medium text-foreground text-xs tabular-nums">
-								{formatPercent(dominant.percent, 0)}
+								{fmtPct(dominant.percent / 100, 0)}
 							</span>
 							<div className="h-1 w-px shrink-0 bg-muted-foreground/35" />
 						</div>
