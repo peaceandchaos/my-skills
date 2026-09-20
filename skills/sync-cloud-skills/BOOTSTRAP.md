@@ -33,6 +33,7 @@ Then apply **Gitignore** and **Handoff** from [`SKILL.md`](SKILL.md) (steps 4 an
 
 ```bash
 test -f .cursor/skills/sync-cloud-skills/SKILL.md
+test -f .cursor/skills/expo-overview/SKILL.md
 test -f .cursor/skills/expo-router/SKILL.md
 COUNT="$(find .cursor/skills -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l | tr -d ' ')"
 test "$COUNT" -ge 15

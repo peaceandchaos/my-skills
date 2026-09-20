@@ -25,7 +25,7 @@ If this skill is missing from the checkout, follow [`BOOTSTRAP.md`](BOOTSTRAP.md
    ```
 
    Defaults: `--source auto`, **upsert**. Auto uses a **complete** local pack (`~/.agents/skills` on a Mac, ≥15 skills). It does **not** treat the Cloud user store (`react-doctor` + `sync-cloud-skills`) as the pack — that path fetches `peaceandchaos/my-skills` instead (needs `GH_TOKEN` / `gh` on Cloud). Pass `--replace` only if the user asks for a full wipe. See `scripts/sync.py --help` for `--source` / `--remote`.  
-   *Done when:* stdout has `source=`, `mode=`, `copied=` **≥ 15**; `expo-router` exists at `<repo>/.cursor/skills/expo-router/SKILL.md`; every `+ name` line has `<repo>/.cursor/skills/<name>/SKILL.md`.  
+   *Done when:* stdout has `source=`, `mode=`, `copied=` **≥ 15**; `expo-overview` and `expo-router` exist under `<repo>/.cursor/skills/`; every `+ name` line has `<repo>/.cursor/skills/<name>/SKILL.md`.  
    *Failed when:* the script exits 2, `copied=` is under 15, or only the two store leftovers landed. **Do not commit.** Tell the user to set `GH_TOKEN` (repo scope on `peaceandchaos/my-skills`) or run `/sync-cloud-skills` from a Mac.
 
 4. **Gitignore** — Ensure `.cursor/skills/` is tracked. If `.gitignore` ignores `.cursor/`, use:

@@ -60,6 +60,22 @@ npx skills add peaceandchaos/my-skills --list
 
 Then commit and push. Other machines / Cloud VMs pick up changes with `npx skills update -y` (or a fresh `npx skills add`). The script overwrites skills that exist locally and leaves vendored dest-only skills in place.
 
+Publish this pack onto this Mac as **real folders** (required for Cloud):
+
+```bash
+./install-local.sh
+```
+
+That copies into `~/.agents/skills`, `~/.cursor/skills`, `~/.claude/skills`, `~/.codex/skills`, and the Cursor user Agent Store. Do not symlink into `~/.cursor/skills` — Cloud “Sync Skills” skips symlinks.
+
+### Cloud, any repo
+
+1. Run `./install-local.sh` (real copies in `~/.cursor/skills`).
+2. Cursor Settings → Agents → Context and Tools → **Sync Skills for Cloud Agents**. Wait until it shows N of N, not 0 of 0.
+3. Start a **new** Cloud Agent. Existing Cloud chats keep the old user-store stub.
+
+Repo checkouts still need `.cursor/skills` committed if you want skills without personal sync (Origin, teammates, phone). This pack is that source.
+
 ## Layout
 
 ```text
@@ -69,7 +85,7 @@ pstack/skills/<name>/SKILL.md  # pstack + poteto-mode; not installed by that CLI
 
 Optional `scripts/`, `references/`, and `assets/` live next to each `SKILL.md`.
 
-## What’s in here (70)
+## What’s in here (87)
 
 Copied from live `~/.agents/skills` first, then `~/.cursor/skills`, `~/.claude/skills`, `~/.codex/skills`, then unique extras from the local plugin pack. Official Expo, Emil, Callstack, and Software Mansion skills below are vendored from GitHub so a Cloud VM can install them from this repo.
 
@@ -79,22 +95,21 @@ Copied from live `~/.agents/skills` first, then `~/.cursor/skills`, `~/.claude/s
 
 **Writing** — `edit-article`, `obsidian-vault`, `writing-beats`, `writing-for-agents`, `writing-fragments`, `writing-shape`
 
-**Mobile / Expo** — `app-ux-workflow-capture`, `expo-ios-hig`, `expo-ui`, `expo-project-structure`, `expo-router`, `expo-native-ui`, `expo-dev-client`, `expo-upgrade`, `eas-simulator`, `mobile-touch`, `react-native-design`, `react-native-best-practices` (Callstack: FPS, TTI, bundle, memory), `react-native-best-practices-sm` (Software Mansion: Reanimated, Gesture Handler, Skia, worklets)
+**Mobile / Expo** — `app-ux-workflow-capture`, `expo-ios-hig`, `expo-overview`, `expo-web-to-native`, `expo-dom`, `expo-animation`, `expo-data-fetching`, `expo-design-system`, `expo-examples`, `expo-module`, `expo-app-clip`, `expo-brownfield`, `expo-skill-feedback`, `expo-ui`, `expo-project-structure`, `expo-router`, `expo-native-ui`, `expo-dev-client`, `expo-upgrade`, `eas-simulator`, `eas-app-stores`, `eas-hosting`, `eas-observe`, `eas-update`, `eas-update-insights`, `eas-workflows`, `mobile-touch`, `react-native-design`, `react-native-best-practices` (Callstack: FPS, TTI, bundle, memory), `react-native-best-practices-sm` (Software Mansion: Reanimated, Gesture Handler, Skia, worklets)
 
-Cloud slash commands come from `.cursor/skills` **in the app repo clone**. `/sync-cloud-skills` must copy this pack (or `~/.agents/skills` on a Mac). The Cloud user store (`react-doctor` + `sync-cloud-skills`) is a stub — treating it as the pack is why Expo commands go missing.
+Cloud slash commands for **this repo** come from `.cursor/skills` in the clone. Cloud slash commands for **any repo** come from real folders in `~/.cursor/skills` after Sync Skills for Cloud Agents. The Cloud user store used to be only `react-doctor` + `sync-cloud-skills` — that stub is why Expo commands went missing.
 
 **Motion / UI** — `12-principles-of-animation`, `emil-prototype`, `emilkowal-animations`, `find-animation-opportunities`, `review-animations`, `generating-sounds-with-ai`, `mastering-animate-presence`, `morphing-icons`, `pseudo-elements`, `sounds-on-the-web`, `to-spring-or-not-to-spring`
 
 **Other** — `figma-review-skill`, `git-guardrails-claude-code`, `hatch-pet`, `scaffold-exercises`
 
-## Vendored from upstream (13 Aug 2026)
+## Vendored from upstream (19 Sep 2026)
 
-These are not on your laptop’s `~/.agents` by default. `./sync-from-local.sh` upserts local skills and **does not delete** dest-only names, so a later Mac sync will not wipe them.
+`./sync-from-local.sh` upserts local skills and **does not delete** dest-only names, so a later Mac sync will not wipe official Expo skills that are not on `~/.agents` yet. Run `./install-local.sh` after a vendor to push them onto this Mac.
 
 | Skill | Source | SHA |
 | --- | --- | --- |
-| `expo-project-structure`, `expo-router`, `expo-native-ui`, `expo-ui`, `expo-dev-client`, `expo-upgrade` | [expo/skills](https://github.com/expo/skills) | `3739723` |
-| `eas-simulator` | [expo/skills](https://github.com/expo/skills) | `92029db` |
+| Official Expo + EAS catalog (`expo-*`, `eas-*` except `expo-ios-hig`) | [expo/skills](https://github.com/expo/skills) `plugins/expo/skills` | `39708666ce7014def1f8e34f3d8c93e8d3f588bb` |
 | `find-animation-opportunities`, `review-animations` | [emilkowalski/skills](https://github.com/emilkowalski/skills) | `78761e1` |
 | `react-native-best-practices` | [callstackincubator/agent-skills](https://github.com/callstackincubator/agent-skills) | `2766baa` |
 | `react-native-best-practices-sm` | [software-mansion-labs/skills](https://github.com/software-mansion-labs/skills) (`react-native-best-practices`, renamed so both fit) | `c4ac0ab` |
