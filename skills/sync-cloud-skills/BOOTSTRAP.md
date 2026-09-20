@@ -4,6 +4,8 @@ Use when the checkout has **no** `.cursor/skills/sync-cloud-skills/` yet (e.g. n
 
 **Requires:** `gh` can read the skills remote (`SYNC_CLOUD_SKILLS_REMOTE`, default `peaceandchaos/my-skills`). On Cloud Agents, set a `GH_TOKEN` PAT with `repo` scope if `gh api` returns 401/403/404.
 
+**Do not** seed from `/cursor/stores/user/skills` or `~/.cursor/skills` when that tree is only `react-doctor` + `sync-cloud-skills`. That is the Cloud user-store stub, not the pack.
+
 **Prefer:** install with `npx skills add peaceandchaos/my-skills --skill '*' -a cursor -y` in the app repo, then commit `.agents/skills`. On a Mac you can still run `/sync-cloud-skills` instead.
 
 ## One-shot install
@@ -31,11 +33,12 @@ Then apply **Gitignore** and **Handoff** from [`SKILL.md`](SKILL.md) (steps 4 an
 
 ```bash
 test -f .cursor/skills/sync-cloud-skills/SKILL.md
-find .cursor/skills -name SKILL.md | wc -l
-git check-ignore -v .cursor/skills/sync-cloud-skills/SKILL.md || true
+test -f .cursor/skills/expo-router/SKILL.md
+COUNT="$(find .cursor/skills -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l | tr -d ' ')"
+test "$COUNT" -ge 15
 ```
 
-*Done when:* `SKILL.md` exists and `find` count is ≥ 1.
+*Done when:* `sync-cloud-skills` and `expo-router` exist and the skill count is ≥ 15. A count of 2 is a failed bootstrap.
 
 ## Mac publisher (before you leave)
 

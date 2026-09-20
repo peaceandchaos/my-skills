@@ -13,12 +13,17 @@ from pathlib import Path
 
 DEFAULT_REMOTE = "peaceandchaos/my-skills"
 REMOTE_SKILLS_SUBPATH = "skills"
+# Cloud Agents often have only the Cursor user-store stub. That is not the pack.
+MIN_COMPLETE_PACK = int(os.environ.get("SYNC_CLOUD_SKILLS_MIN", "15"))
+STORE_STUB_NAMES = frozenset({"react-doctor", "sync-cloud-skills"})
 LOCAL_ROOTS = (
     Path(".agents") / "skills",
     Path(".cursor") / "skills",
     Path(".claude") / "skills",
     Path(".codex") / "skills",
 )
+# Lowest priority. Present on Cloud VMs; never treat as a complete pack alone.
+CLOUD_STORE_ROOTS = (Path("/cursor/stores/user/skills"),)
 
 
 def repo_root() -> Path:
@@ -40,23 +45,43 @@ def discover_builtins() -> set[str]:
     return {p.parent.name for p in skills_cursor.rglob("SKILL.md")}
 
 
+def _collect_from_root(root: Path, builtins: set[str], chosen: dict[str, Path]) -> None:
+    if not root.exists():
+        return
+    for skill_md in root.rglob("SKILL.md"):
+        if ".system" in skill_md.parts:
+            continue
+        skill_dir = skill_md.parent
+        name = skill_dir.name
+        if name in builtins:
+            continue
+        if name not in chosen:
+            chosen[name] = skill_dir
+
+
 def collect_local(builtins: set[str]) -> dict[str, Path]:
     home = Path.home()
     chosen: dict[str, Path] = {}
     for rel in LOCAL_ROOTS:
-        root = home / rel
-        if not root.exists():
-            continue
-        for skill_md in root.rglob("SKILL.md"):
-            if ".system" in skill_md.parts:
-                continue
-            skill_dir = skill_md.parent
-            name = skill_dir.name
-            if name in builtins:
-                continue
-            if name not in chosen:
-                chosen[name] = skill_dir
+        _collect_from_root(home / rel, builtins, chosen)
+    for root in CLOUD_STORE_ROOTS:
+        _collect_from_root(root, builtins, chosen)
     return chosen
+
+
+def pack_is_complete(chosen: dict[str, Path]) -> bool:
+    names = set(chosen)
+    if not names:
+        return False
+    if names <= STORE_STUB_NAMES:
+        return False
+    return len(chosen) >= MIN_COMPLETE_PACK
+
+
+def sparse_reason(chosen: dict[str, Path]) -> str:
+    names = ", ".join(sorted(chosen)[:12])
+    extra = "" if len(chosen) <= 12 else f", … ({len(chosen)} total)"
+    return f"{len(chosen)} skills ({names}{extra}); need >= {MIN_COMPLETE_PACK} or a readable remote pack"
 
 
 def fetch_remote_skills(remote: str, ref: str) -> tuple[Path, Path]:
@@ -105,13 +130,7 @@ def fetch_remote_skills(remote: str, ref: str) -> tuple[Path, Path]:
 def collect_remote(remote: str, ref: str, builtins: set[str]) -> tuple[dict[str, Path], Path]:
     tmp, skills_root = fetch_remote_skills(remote, ref)
     chosen: dict[str, Path] = {}
-    for skill_md in skills_root.rglob("SKILL.md"):
-        skill_dir = skill_md.parent
-        name = skill_dir.name
-        if name in builtins:
-            continue
-        if name not in chosen:
-            chosen[name] = skill_dir
+    _collect_from_root(skills_root, builtins, chosen)
     return chosen, tmp
 
 
@@ -171,6 +190,16 @@ def install_skills(
     return copied, skipped
 
 
+def refuse_sparse(chosen: dict[str, Path], remote: str) -> None:
+    sys.exit(
+        "Refusing to mirror a sparse skill pack: "
+        + sparse_reason(chosen)
+        + f". Cloud user-store leftovers ({', '.join(sorted(STORE_STUB_NAMES))}) "
+        f"are not the pack. Set GH_TOKEN for {remote}, or run this from a Mac "
+        "that has ~/.agents/skills."
+    )
+
+
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
         description="Mirror agent skills into the current repo's .cursor/skills/."
@@ -179,7 +208,10 @@ def parse_args() -> argparse.Namespace:
         "--source",
         choices=("auto", "local", "remote"),
         default="auto",
-        help="Skill source (default: auto = local if any, else remote).",
+        help=(
+            "Skill source (default: auto = complete local pack if present, "
+            "else remote my-skills). A 2-skill Cloud user store is not complete."
+        ),
     )
     p.add_argument(
         "--replace",
@@ -212,6 +244,10 @@ def main() -> None:
             chosen = collect_local(builtins)
             if not chosen:
                 sys.exit("No local skills found under ~/.agents|cursor|claude|codex/skills.")
+            if not pack_is_complete(chosen) and not os.environ.get(
+                "SYNC_CLOUD_SKILLS_ALLOW_SPARSE"
+            ):
+                refuse_sparse(chosen, args.remote)
             source_label = "local"
         elif args.source == "remote":
             chosen, cleanup = collect_remote(args.remote, args.ref, builtins)
@@ -219,17 +255,32 @@ def main() -> None:
                 sys.exit(f"No skills found in {args.remote}:{args.ref}/{REMOTE_SKILLS_SUBPATH}")
             source_label = "remote"
         else:
-            chosen = collect_local(builtins)
-            if chosen and not os.environ.get("SYNC_CLOUD_SKILLS_FORCE_REMOTE"):
+            local = collect_local(builtins)
+            force_remote = bool(os.environ.get("SYNC_CLOUD_SKILLS_FORCE_REMOTE"))
+            if local and pack_is_complete(local) and not force_remote:
+                chosen = local
                 source_label = "local"
             else:
+                if local and not pack_is_complete(local):
+                    print(
+                        f"local pack is sparse: {sparse_reason(local)}; fetching {args.remote}",
+                        file=sys.stderr,
+                    )
                 chosen, cleanup = collect_remote(args.remote, args.ref, builtins)
                 if not chosen:
+                    if local:
+                        refuse_sparse(local, args.remote)
                     sys.exit(
                         "No local skills and remote fetch returned none. "
                         "See BOOTSTRAP.md or set SYNC_CLOUD_SKILLS_REMOTE."
                     )
-                source_label = "remote"
+                # Remote is the pack; local extras overlay (Mac-only skills win).
+                merged = dict(chosen)
+                merged.update(local)
+                chosen = merged
+                source_label = "remote+local" if local else "remote"
+                if not pack_is_complete(chosen):
+                    refuse_sparse(chosen, args.remote)
 
         # Prefer the skill folder that contains this script so a stale home/remote
         # copy cannot overwrite in-progress edits to sync-cloud-skills itself.
@@ -243,13 +294,20 @@ def main() -> None:
         print(f"repo={repo}")
         print(f"source={source_label}")
         print(f"mode={mode}")
-        if source_label == "remote":
+        if source_label.startswith("remote"):
             print(f"remote={args.remote}@{args.ref}")
         print(f"copied={len(copied)} skipped={len(skipped)}")
         for n in copied:
             print(f"  + {n}")
         for n, reason in skipped:
             print(f"  - {n}: {reason}")
+        if len(copied) < MIN_COMPLETE_PACK:
+            print(
+                f"ERROR: copied={len(copied)} is below min {MIN_COMPLETE_PACK}. "
+                "Do not commit this stub.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
     finally:
         if cleanup is not None:
             shutil.rmtree(cleanup, ignore_errors=True)

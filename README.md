@@ -69,17 +69,19 @@ pstack/skills/<name>/SKILL.md  # pstack + poteto-mode; not installed by that CLI
 
 Optional `scripts/`, `references/`, and `assets/` live next to each `SKILL.md`.
 
-## What’s in here (69)
+## What’s in here (70)
 
 Copied from live `~/.agents/skills` first, then `~/.cursor/skills`, `~/.claude/skills`, `~/.codex/skills`, then unique extras from the local plugin pack. Official Expo, Emil, Callstack, and Software Mansion skills below are vendored from GitHub so a Cloud VM can install them from this repo.
 
-**Engineering** — `code-review`, `codebase-design`, `diagnosing-bugs`, `domain-modeling`, `implement`, `improve-codebase-architecture`, `migrate-to-shoehorn`, `prototype`, `react-doctor`, `resolving-merge-conflicts`, `setup-pre-commit`, `setup-ts-deep-modules`, `tdd`, `thermo-nuclear-code-quality-review`, `supabase-postgres-best-practices`
+**Engineering** — `code-review`, `codebase-design`, `diagnosing-bugs`, `domain-modeling`, `implement`, `improve-codebase-architecture`, `migrate-to-shoehorn`, `prototype`, `react-doctor`, `resolving-merge-conflicts`, `setup-pre-commit`, `setup-ts-deep-modules`, `tdd`, `thermo-nuclear-code-quality-review`, `supabase-postgres-best-practices`, `vercel-react-best-practices`
 
 **Planning** — `ask-matt`, `grill-me`, `grill-with-docs`, `grilling`, `handoff`, `claude-handoff`, `loop-me`, `orchestrate`, `research`, `setup-matt-pocock-skills`, `teach`, `to-questionnaire`, `to-spec`, `to-tickets`, `triage`, `wait-what`, `wayfinder`, `wizard`, `sync-cloud-skills`, `find-skills`
 
 **Writing** — `edit-article`, `obsidian-vault`, `writing-beats`, `writing-for-agents`, `writing-fragments`, `writing-shape`
 
 **Mobile / Expo** — `app-ux-workflow-capture`, `expo-ios-hig`, `expo-ui`, `expo-project-structure`, `expo-router`, `expo-native-ui`, `expo-dev-client`, `expo-upgrade`, `eas-simulator`, `mobile-touch`, `react-native-design`, `react-native-best-practices` (Callstack: FPS, TTI, bundle, memory), `react-native-best-practices-sm` (Software Mansion: Reanimated, Gesture Handler, Skia, worklets)
+
+Cloud slash commands come from `.cursor/skills` **in the app repo clone**. `/sync-cloud-skills` must copy this pack (or `~/.agents/skills` on a Mac). The Cloud user store (`react-doctor` + `sync-cloud-skills`) is a stub — treating it as the pack is why Expo commands go missing.
 
 **Motion / UI** — `12-principles-of-animation`, `emil-prototype`, `emilkowal-animations`, `find-animation-opportunities`, `review-animations`, `generating-sounds-with-ai`, `mastering-animate-presence`, `morphing-icons`, `pseudo-elements`, `sounds-on-the-web`, `to-spring-or-not-to-spring`
 
