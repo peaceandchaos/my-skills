@@ -99,7 +99,7 @@ Copied from live `~/.agents/skills` first, then `~/.cursor/skills`, `~/.claude/s
 
 Cloud slash commands for **this repo** come from `.cursor/skills` in the clone. Cloud slash commands for **any repo** come from real folders in `~/.cursor/skills` after Sync Skills for Cloud Agents. The Cloud user store used to be only `react-doctor` + `sync-cloud-skills` — that stub is why Expo commands went missing.
 
-**Motion / UI** — `12-principles-of-animation`, `emil-prototype`, `emilkowal-animations`, `find-animation-opportunities`, `review-animations`, `generating-sounds-with-ai`, `mastering-animate-presence`, `morphing-icons`, `pseudo-elements`, `sounds-on-the-web`, `to-spring-or-not-to-spring`
+**Motion / UI** — `12-principles-of-animation`, `emil-prototype`, `find-animation-opportunities`, `review-animations`, `generating-sounds-with-ai`, `mastering-animate-presence`, `morphing-icons`, `pseudo-elements`, `sounds-on-the-web`, `to-spring-or-not-to-spring`
 
 **Other** — `figma-review-skill`, `git-guardrails-claude-code`, `hatch-pet`, `scaffold-exercises`
 
