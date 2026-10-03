@@ -18,6 +18,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 UPDATE = REPO / "scripts" / "update.py"
+INSTALL = REPO / "scripts" / "install.py"
 sys.path.insert(0, str(REPO / "scripts"))
 import skillsync as ss  # noqa: E402
 
@@ -41,6 +42,22 @@ def _mode_data(v) -> tuple[str, bytes]:
 def subtree(files: Files, prefix: str) -> Files:
     p = prefix.rstrip("/") + "/"
     return {k[len(p):]: v for k, v in files.items() if k.startswith(p)}
+
+
+def snapshot(root: Path) -> dict[str, bytes]:
+    """Every path under root with its bytes and mode, for 'writes nothing' checks. Symlinks are not followed."""
+    out = {}
+    for dirpath, dirnames, filenames in os.walk(root):
+        for name in dirnames + filenames:
+            p = Path(dirpath) / name
+            rel = p.relative_to(root).as_posix()
+            if p.is_symlink():
+                out[rel] = b"link:" + os.fsencode(os.readlink(p))
+            elif p.is_dir():
+                out[rel] = b"dir"
+            else:
+                out[rel] = p.read_bytes() + (p.stat().st_mode & 0o777).to_bytes(2, "big")
+    return out
 
 
 def write_files(dest: Path, files: Files) -> None:
@@ -197,11 +214,3 @@ class Scenario(unittest.TestCase):
 
     def update(self, *args: str) -> subprocess.CompletedProcess:
         return self.env.run(UPDATE, "--root", str(self.root), *args)
-
-    def snapshot(self) -> dict[str, bytes]:
-        """Every file under the my-skills root, for 'writes nothing' checks."""
-        out = {}
-        for p in sorted(self.root.rglob("*")):
-            if p.is_file():
-                out[p.relative_to(self.root).as_posix()] = p.read_bytes() + (p.stat().st_mode & 0o777).to_bytes(2, 'big')
-        return out

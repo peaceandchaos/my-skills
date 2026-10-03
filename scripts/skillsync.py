@@ -185,7 +185,7 @@ def load_sources(path: Path) -> Sources:
 # git
 
 
-def _git_env() -> dict[str, str]:
+def git_env() -> dict[str, str]:
     env = {
         k: v
         for k, v in os.environ.items()
@@ -215,7 +215,7 @@ def run_git(git_dir: Path, *args: str, input: bytes | None = None, check: bool =
         ["git", *GIT_SAFE, f"--git-dir={git_dir}", *args],
         input=input,
         capture_output=True,
-        env=_git_env(),
+        env=git_env(),
     )
     if check and proc.returncode != 0:
         msg = proc.stderr.decode("utf-8", "replace").strip()
@@ -288,7 +288,7 @@ class GitSource:
             self.dir.mkdir(parents=True, exist_ok=True)
             subprocess.run(
                 ["git", "init", "--quiet", "--bare", str(self.dir)],
-                check=True, capture_output=True, env=_git_env(),
+                check=True, capture_output=True, env=git_env(),
             )
             self.git("config", "core.repositoryformatversion", "1")
             self.git("config", "extensions.partialClone", "upstream")
