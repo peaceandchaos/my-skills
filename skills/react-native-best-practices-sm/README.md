@@ -22,7 +22,7 @@ Add this skill to give your AI coding agent accurate, current guidance for Softw
 ## Structure
 
 ```
-react-native-best-practices-sm/
+react-native-best-practices/
 ├── SKILL.md                              # Entry point: routing table for sub-skills
 └── references/
     ├── animations/

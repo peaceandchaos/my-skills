@@ -1,6 +1,6 @@
 ---
 name: emil-prototype
-description: Emil Kowalski's UI divergence skill — build multiple genuinely different versions of a UI piece behind a visual picker, flip through them live, and promote the winner. Use when explicitly asked for Emil-style prototyping or /emil-prototype. Only runs when explicitly invoked.
+description: Build multiple genuinely different versions of a UI piece you describe, rendered behind a visual picker so you can flip through them live and promote the one that feels right. Only runs when explicitly invoked; it does not trigger on its own.
 disable-model-invocation: true
 ---
 

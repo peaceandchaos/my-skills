@@ -4,8 +4,6 @@ description: "Software Mansion's best practices for production React Native and 
 license: MIT
 ---
 
-> Vendored from [software-mansion-labs/skills](https://github.com/software-mansion-labs/skills) (`c4ac0ab`). Renamed from `react-native-best-practices` so it can sit next to Callstack's skill of that name. Use this skill for Reanimated, Gesture Handler, Skia, worklets, and other Software Mansion libraries. Use `react-native-best-practices` for Callstack performance (FPS, TTI, bundle, memory).
-
 # React Native Best Practices
 
 Software Mansion's production patterns for React Native apps on the New Architecture.
