@@ -1,0 +1,478 @@
+{
+  "repos": {
+    "callstackincubator/agent-skills": {
+      "url": "https://github.com/callstackincubator/agent-skills",
+      "branch": "main",
+      "pin": "2766baa46ca0fe7c16cc5ab4d0077ccec2e95fb9",
+      "license": "MIT (LICENSE at the repo root)"
+    },
+    "cursor/plugins": {
+      "url": "https://github.com/cursor/plugins",
+      "branch": "main",
+      "pin": "a58628271271837ef5f386adca29c0812683a19a",
+      "license": "MIT (cursor-team-kit/LICENSE)"
+    },
+    "dylantarre/animation-principles": {
+      "url": "https://github.com/dylantarre/animation-principles",
+      "branch": "main",
+      "pin": "83597134ba8ff59838270f94d7ac7282ffa3b54d",
+      "license": "MIT (LICENSE at the repo root)"
+    },
+    "emilkowalski/skills": {
+      "url": "https://github.com/emilkowalski/skills",
+      "branch": "main",
+      "pin": "78761e1b57f97dce65b983d640c70a68f39e8163",
+      "license": "MIT (LICENSE at the repo root)"
+    },
+    "expo/skills": {
+      "url": "https://github.com/expo/skills",
+      "branch": "main",
+      "pin": "39708666ce7014def1f8e34f3d8c93e8d3f588bb",
+      "license": "MIT (LICENSE at the repo root)"
+    },
+    "mattpocock/skills": {
+      "url": "https://github.com/mattpocock/skills",
+      "branch": "main",
+      "pin": "8b78b531ab965735c5dc74f6f7a219e1e37326df",
+      "license": "MIT (LICENSE at the repo root)"
+    },
+    "millionco/react-doctor": {
+      "url": "https://github.com/millionco/react-doctor",
+      "branch": "main",
+      "pin": "69eead3c439f20dca9613b1696cc839835b1db1a",
+      "license": "MIT (LICENSE at the repo root)"
+    },
+    "openai/skills": {
+      "url": "https://github.com/openai/skills",
+      "branch": "main",
+      "pin": "49f948faa9258a0c61caceaf225e179651397431",
+      "license": "Apache-2.0 (LICENSE.txt in the skill folder)"
+    },
+    "pproenca/dot-skills": {
+      "url": "https://github.com/pproenca/dot-skills",
+      "branch": "master",
+      "pin": "cf93c57cac89d6fc3e4194686000411567f5caf3",
+      "license": "MIT (LICENSE at the repo root)"
+    },
+    "raphaelsalaja/userinterface-wiki": {
+      "url": "https://github.com/raphaelsalaja/userinterface-wiki",
+      "branch": "main",
+      "pin": "256a954080c8bcf1b1ceb1e2a4079d1f24cf593a",
+      "license": "MIT (license.md at the repo root)"
+    },
+    "software-mansion-labs/skills": {
+      "url": "https://github.com/software-mansion-labs/skills",
+      "branch": "main",
+      "pin": "c4ac0abdbddb9c6513b6071eb342d440bcc4bfe0",
+      "license": "MIT (SKILL.md frontmatter; no LICENSE file)"
+    },
+    "supabase/agent-skills": {
+      "url": "https://github.com/supabase/agent-skills",
+      "branch": "main",
+      "pin": "1712854a5128a32c418bc572a4cfda04dc5aa0d5",
+      "license": "MIT (SKILL.md frontmatter; no LICENSE file)"
+    },
+    "vercel-labs/agent-skills": {
+      "url": "https://github.com/vercel-labs/agent-skills",
+      "branch": "main",
+      "pin": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "license": "MIT (SKILL.md frontmatter; no LICENSE file)"
+    },
+    "vercel-labs/skills": {
+      "url": "https://github.com/vercel-labs/skills",
+      "branch": "main",
+      "pin": "9e064a6cb4ba8c61918c53569cec96c3ca67efce",
+      "license": "MIT (package.json at the pin; LICENSE at later commits)"
+    },
+    "wshobson/agents": {
+      "url": "https://github.com/wshobson/agents",
+      "branch": "main",
+      "pin": "156b7a5e7a8b93642628a339ee4039c925b34c7f",
+      "license": "MIT (LICENSE at the repo root)"
+    }
+  },
+  "skills": {
+    "app-ux-workflow-capture": {
+      "kind": "own"
+    },
+    "ask-matt": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/ask-matt",
+      "kind": "upstream"
+    },
+    "claude-handoff": {
+      "repo": "mattpocock/skills",
+      "path": "skills/in-progress/claude-handoff",
+      "kind": "upstream"
+    },
+    "code-review": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/code-review",
+      "kind": "upstream"
+    },
+    "codebase-design": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/codebase-design",
+      "kind": "upstream"
+    },
+    "diagnosing-bugs": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/diagnosing-bugs",
+      "kind": "upstream"
+    },
+    "domain-modeling": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/domain-modeling",
+      "kind": "upstream"
+    },
+    "eas-app-stores": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/eas-app-stores",
+      "kind": "upstream"
+    },
+    "eas-hosting": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/eas-hosting",
+      "kind": "upstream"
+    },
+    "eas-observe": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/eas-observe",
+      "kind": "upstream"
+    },
+    "eas-simulator": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/eas-simulator",
+      "kind": "upstream"
+    },
+    "eas-update": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/eas-update",
+      "kind": "upstream"
+    },
+    "eas-update-insights": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/eas-update-insights",
+      "kind": "upstream"
+    },
+    "eas-workflows": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/eas-workflows",
+      "kind": "upstream"
+    },
+    "emil-prototype": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/prototype",
+      "kind": "fork",
+      "rename": "prototype",
+      "note": "Renamed so it does not clash with mattpocock's prototype."
+    },
+    "expo-animation": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-animation",
+      "kind": "upstream"
+    },
+    "expo-app-clip": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-app-clip",
+      "kind": "upstream"
+    },
+    "expo-brownfield": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-brownfield",
+      "kind": "upstream"
+    },
+    "expo-data-fetching": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-data-fetching",
+      "kind": "upstream"
+    },
+    "expo-design-system": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-design-system",
+      "kind": "upstream"
+    },
+    "expo-dev-client": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-dev-client",
+      "kind": "upstream"
+    },
+    "expo-dom": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-dom",
+      "kind": "upstream"
+    },
+    "expo-examples": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-examples",
+      "kind": "upstream"
+    },
+    "expo-ios-hig": {
+      "repo": "pproenca/dot-skills",
+      "path": "skills/.experimental/expo-ios-hig",
+      "kind": "upstream"
+    },
+    "expo-module": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-module",
+      "kind": "upstream"
+    },
+    "expo-native-ui": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-native-ui",
+      "kind": "upstream"
+    },
+    "expo-overview": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-overview",
+      "kind": "upstream"
+    },
+    "expo-project-structure": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-project-structure",
+      "kind": "upstream"
+    },
+    "expo-router": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-router",
+      "kind": "upstream"
+    },
+    "expo-skill-feedback": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-skill-feedback",
+      "kind": "upstream"
+    },
+    "expo-ui": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-ui",
+      "kind": "upstream"
+    },
+    "expo-upgrade": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-upgrade",
+      "kind": "upstream"
+    },
+    "expo-web-to-native": {
+      "repo": "expo/skills",
+      "path": "plugins/expo/skills/expo-web-to-native",
+      "kind": "upstream"
+    },
+    "figma-review-skill": {
+      "kind": "own"
+    },
+    "find-animation-opportunities": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/find-animation-opportunities",
+      "kind": "upstream"
+    },
+    "find-skills": {
+      "repo": "vercel-labs/skills",
+      "path": "skills/find-skills",
+      "kind": "upstream"
+    },
+    "git-guardrails-claude-code": {
+      "repo": "mattpocock/skills",
+      "path": "skills/misc/git-guardrails-claude-code",
+      "kind": "upstream"
+    },
+    "grill-me": {
+      "repo": "mattpocock/skills",
+      "path": "skills/productivity/grill-me",
+      "kind": "upstream"
+    },
+    "grill-with-docs": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/grill-with-docs",
+      "kind": "upstream"
+    },
+    "grilling": {
+      "repo": "mattpocock/skills",
+      "path": "skills/productivity/grilling",
+      "kind": "upstream"
+    },
+    "handoff": {
+      "repo": "mattpocock/skills",
+      "path": "skills/productivity/handoff",
+      "kind": "upstream"
+    },
+    "hatch-pet": {
+      "repo": "openai/skills",
+      "path": "skills/.curated/hatch-pet",
+      "kind": "upstream"
+    },
+    "implement": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/implement",
+      "kind": "upstream"
+    },
+    "improve-codebase-architecture": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/improve-codebase-architecture",
+      "kind": "upstream"
+    },
+    "loop-me": {
+      "repo": "mattpocock/skills",
+      "path": "skills/in-progress/loop-me",
+      "kind": "upstream"
+    },
+    "migrate-to-shoehorn": {
+      "repo": "mattpocock/skills",
+      "path": "skills/misc/migrate-to-shoehorn",
+      "kind": "upstream"
+    },
+    "mobile-touch": {
+      "repo": "dylantarre/animation-principles",
+      "path": "skills/01-by-domain/mobile-touch",
+      "kind": "upstream"
+    },
+    "orchestrate": {
+      "kind": "own"
+    },
+    "prototype": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/prototype",
+      "kind": "upstream"
+    },
+    "react-doctor": {
+      "repo": "millionco/react-doctor",
+      "path": "skills/react-doctor",
+      "kind": "upstream"
+    },
+    "react-native-best-practices": {
+      "repo": "callstackincubator/agent-skills",
+      "path": "skills/react-native-best-practices",
+      "kind": "upstream"
+    },
+    "react-native-best-practices-sm": {
+      "repo": "software-mansion-labs/skills",
+      "path": "skills/react-native-best-practices",
+      "kind": "fork",
+      "rename": "react-native-best-practices",
+      "note": "Renamed so it can sit next to Callstack's react-native-best-practices. Use it for Reanimated, Gesture Handler, Skia, worklets and other Software Mansion libraries."
+    },
+    "react-native-design": {
+      "repo": "wshobson/agents",
+      "path": "plugins/ui-design/skills/react-native-design",
+      "kind": "upstream"
+    },
+    "research": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/research",
+      "kind": "upstream"
+    },
+    "review-animations": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/review-animations",
+      "kind": "upstream"
+    },
+    "scaffold-exercises": {
+      "repo": "mattpocock/skills",
+      "path": "skills/misc/scaffold-exercises",
+      "kind": "upstream"
+    },
+    "setup-matt-pocock-skills": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/setup-matt-pocock-skills",
+      "kind": "upstream"
+    },
+    "setup-pre-commit": {
+      "repo": "mattpocock/skills",
+      "path": "skills/misc/setup-pre-commit",
+      "kind": "upstream"
+    },
+    "setup-ts-deep-modules": {
+      "repo": "mattpocock/skills",
+      "path": "skills/in-progress/setup-ts-deep-modules",
+      "kind": "upstream"
+    },
+    "supabase-postgres-best-practices": {
+      "repo": "supabase/agent-skills",
+      "path": "skills/postgres-best-practices",
+      "kind": "upstream"
+    },
+    "sync-cloud-skills": {
+      "kind": "own"
+    },
+    "tdd": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/tdd",
+      "kind": "upstream"
+    },
+    "teach": {
+      "repo": "mattpocock/skills",
+      "path": "skills/productivity/teach",
+      "kind": "upstream"
+    },
+    "thermo-nuclear-code-quality-review": {
+      "repo": "cursor/plugins",
+      "path": "cursor-team-kit/skills/thermo-nuclear-code-quality-review",
+      "kind": "upstream"
+    },
+    "to-questionnaire": {
+      "repo": "mattpocock/skills",
+      "path": "skills/productivity/to-questionnaire",
+      "kind": "upstream"
+    },
+    "to-spec": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/to-spec",
+      "kind": "upstream"
+    },
+    "to-tickets": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/to-tickets",
+      "kind": "upstream"
+    },
+    "triage": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/triage",
+      "kind": "upstream"
+    },
+    "userinterface-wiki": {
+      "repo": "raphaelsalaja/userinterface-wiki",
+      "path": "skills",
+      "kind": "upstream",
+      "note": "Replaces the 7 raphaelsalaja skills that upstream merged into it (v3.0.0)."
+    },
+    "vercel-react-best-practices": {
+      "repo": "vercel-labs/agent-skills",
+      "path": "skills/react-best-practices",
+      "kind": "upstream"
+    },
+    "wait-what": {
+      "repo": "mattpocock/skills",
+      "path": "skills/productivity/wait-what",
+      "kind": "upstream"
+    },
+    "wayfinder": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/wayfinder",
+      "kind": "upstream"
+    },
+    "wizard": {
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/wizard",
+      "kind": "upstream"
+    },
+    "writing-beats": {
+      "repo": "mattpocock/skills",
+      "path": "skills/in-progress/writing-beats",
+      "kind": "upstream"
+    },
+    "writing-for-agents": {
+      "repo": "mattpocock/skills",
+      "path": "skills/productivity/writing-for-agents",
+      "kind": "upstream"
+    },
+    "writing-fragments": {
+      "repo": "mattpocock/skills",
+      "path": "skills/in-progress/writing-fragments",
+      "kind": "upstream"
+    },
+    "writing-shape": {
+      "repo": "mattpocock/skills",
+      "path": "skills/in-progress/writing-shape",
+      "kind": "upstream"
+    }
+  }
+}
