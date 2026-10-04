@@ -43,6 +43,20 @@ def refusal(project: Path, locked_project: bool) -> str | None:
     return None
 
 
+def left_out(project: Path, names: list[str]) -> str | None:
+    """Why a rerun that leaves out an installed skill is refused, or None.
+
+    The new manifest lists only the given names, so a skill left out would stay
+    on disk with nothing checking it."""
+    if not (project / MANIFEST).exists():
+        return None
+    _, installed = read_manifest(project)
+    kept = sorted(n for n in installed if n not in names and (project / SKILLS / n).is_dir())
+    if not kept:
+        return None
+    return (f"{', '.join(kept)} still installed; name it again, or delete its folder to drop it")
+
+
 def install(project: Path, source: str, ref: str, names: list[str], cache: str | None) -> int:
     with ss.cache_dir(cache) as cache_root:
         src = ss.GitSource(cache_root, "my-skills", source)
@@ -120,13 +134,15 @@ def main(argv: list[str] | None = None) -> int:
             p.error(f"bad skill name {name!r}")
     if len(set(args.names)) != len(args.names):
         p.error("a skill name is repeated")
+    if args.commit and not (ss.HEX40.match(args.commit) or ss.BRANCH_RE.match(args.commit)):
+        p.error(f"bad --commit {args.commit!r}: give a full commit id or a branch or tag name")
     if not args.source.startswith(("https://", "file://")):
         p.error("--source must be an https:// or file:// URL")
     project = Path(args.project).resolve()
     try:
         if args.check:
             return check(project)
-        reason = refusal(project, args.locked_project)
+        reason = refusal(project, args.locked_project) or left_out(project, args.names)
         if reason:
             print(f"refused: {reason}", file=sys.stderr)
             return 2

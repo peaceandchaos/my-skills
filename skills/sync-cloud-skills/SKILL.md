@@ -39,4 +39,4 @@ Run from the my-skills clone. `<project>` is the top folder of the git repo that
 3. Commit in the project. Stage `.claude/skills/<name>/` for each name and `.claude/my-skills.lock.json`, then commit under the project's own rules. If `git check-ignore -v .claude/my-skills.lock.json` prints a rule, change an ignored `.claude/` to `.claude/*` and add `!.claude/skills/` and `!.claude/my-skills.lock.json`. A trailing slash on the parent blocks the negation.
    *Done when:* the commit exists, and it is pushed if the project's rules allow. Tell the owner that a new cloud session reads the skills from that pushed commit, and a running session keeps its old checkout.
 
-To update a project later, rerun step 1 with the same names. The install replaces the named folders and never deletes one. To drop a skill, delete its folder and rerun step 1 with the names that remain.
+To update a project later, rerun step 1 with the same names. The install replaces the named folders and never deletes one. To drop a skill, delete its folder and rerun step 1 with the names that remain. A rerun that leaves out a skill whose folder still exists is refused and writes nothing.

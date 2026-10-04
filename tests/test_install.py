@@ -68,6 +68,17 @@ class InstallTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
         self.assertIn("FAIL drift .claude/skills/alpha", result.stdout)
 
+    def test_rerun_that_leaves_out_an_installed_skill_is_refused(self):
+        self.assertEqual(self.install(self.project, "alpha").returncode, 0)
+        before = snapshot(self.project)
+        result = self.install(self.project, "beta")
+        self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+        self.assertIn("refused: alpha still installed", result.stderr)
+        self.assertEqual(snapshot(self.project), before)
+        shutil.rmtree(self.project / ".claude/skills/alpha")
+        self.assertEqual(self.install(self.project, "beta").returncode, 0)
+        self.assertEqual(self.check().returncode, 0)
+
     def test_unknown_skill_writes_nothing(self):
         before = snapshot(self.project)
         result = self.install(self.project, "alpha", "gamma")
