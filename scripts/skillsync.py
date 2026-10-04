@@ -364,8 +364,11 @@ class GitSource:
         check = self.git("cat-file", "--batch-check=%(objectname) %(objecttype)", input="".join(f"{o}\n" for o in wanted).encode()).stdout
         missing = [line.split()[0] for line in check.decode().splitlines() if line.endswith(" missing")]
         if missing:
-            self.git("fetch", "--quiet", "--no-tags", "--no-write-fetch-head", "--recurse-submodules=no",
-                     "--filter=blob:none", "--stdin", "upstream", input="".join(f"{o}\n" for o in missing).encode())
+            # Same negotiation as git's own lazy fetch. With the default one, GitHub treats blobs
+            # reachable from commits already in the cache as present and leaves them out of the pack.
+            self.git("-c", "fetch.negotiationAlgorithm=noop", "fetch", "--quiet", "--no-tags", "--no-write-fetch-head",
+                     "--recurse-submodules=no", "--filter=blob:none", "--stdin", "upstream",
+                     input="".join(f"{o}\n" for o in missing).encode())
 
     def read_blobs(self, oids: Iterable[str]) -> dict[str, bytes]:
         wanted = sorted({o for o in oids if o != ZERO_OID})
