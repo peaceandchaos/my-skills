@@ -65,6 +65,19 @@ class UpdateTest(Scenario):
         self.assertIn(f"error: gamma: skills/gamma is gone at {new[:12]}; the pin stays", result.stdout)
         self.assertEqual(snapshot(self.root), before)
 
+    def test_repointed_path_updates_from_the_new_folder(self):
+        moved = skill_md("gamma", "Gamma, moved upstream.")
+        new = self.old.edit({"skills/gamma2/SKILL.md": moved}, remove=("skills/gamma",))
+        self.assertEqual(self.update().returncode, 1)
+        self.sources["skills"]["gamma"]["path"] = "skills/gamma2"
+        self.write_sources()
+        result = self.update()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(self.read_sources()["repos"]["old/skills"]["pin"], new)
+        self.assertEqual((self.root / "skills/gamma/SKILL.md").read_text(), moved)
+        check = self.update("--check")
+        self.assertEqual(check.returncode, 0, check.stdout + check.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

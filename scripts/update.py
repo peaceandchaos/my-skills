@@ -189,9 +189,7 @@ def plan_repo(src: ss.GitSource, sources: ss.Sources, repo: ss.Repo) -> RepoPlan
 
 
 def plan_entry(src: ss.GitSource, repo: ss.Repo, e: ss.Entry, plan: RepoPlan) -> None:
-    old_t = src.tree_at(repo.pin, e.path)
-    if old_t is None:
-        raise ss.SyncError(f"{e.path} is missing at the pin {repo.pin[:12]}; run --check")
+    old_t = src.tree_at(repo.pin, e.path) or ss.EMPTY_TREE
     new_t = src.tree_at(plan.new, e.path)
     if new_t is None:
         raise ss.SyncError(f"{e.path} is gone at {plan.new[:12]}; the pin stays")
