@@ -27,6 +27,7 @@ SKILLS = Path(".claude") / "skills"
 MANIFEST = Path(".claude") / "my-skills.lock.json"
 GLOW_LOCK = Path("tools") / "skills" / "catalog.lock.json"
 PERSONAL = (Path(".cursor") / "skills", Path(".claude") / "skills")
+FINDER_FILES = frozenset({".DS_Store"})
 
 
 def refusal(project: Path, locked_project: bool) -> str | None:
@@ -59,13 +60,26 @@ def left_out(project: Path, names: list[str]) -> str | None:
 
 
 def personal_clashes(trees: dict[str, str]) -> list[str]:
-    """Personal copies that share a name with a pinned skill but not its content.
+    """Personal skills that share a name with a pinned skill but not its content.
 
-    Cursor loads a project copy and a personal copy of one name side by side."""
+    Claude Code runs a personal copy instead of the project's, and Cursor loads
+    both. Only a folder with a SKILL.md is a skill, and Finder's .DS_Store files
+    are not content."""
     home = Path.home()
-    return [f"{home / root / name} differs from the pinned {name}"
-            for name, tree in sorted(trees.items()) for root in PERSONAL
-            if (home / root / name).is_dir() and ss.tree_of_dir((home / root / name).resolve()) != tree]
+    clashes = []
+    for name, tree in sorted(trees.items()):
+        for root in PERSONAL:
+            folder = home / root / name
+            if not (folder / "SKILL.md").is_file():
+                continue
+            try:
+                same = ss.tree_of_dir(folder.resolve(), FINDER_FILES) == tree
+            except (OSError, ss.SyncError) as exc:
+                clashes.append(f"{folder} cannot be compared with the pinned {name} ({exc})")
+                continue
+            if not same:
+                clashes.append(f"{folder} differs from the pinned {name}")
+    return clashes
 
 
 def install(project: Path, source: str, ref: str, names: list[str], cache: str | None) -> int:
@@ -80,7 +94,8 @@ def install(project: Path, source: str, ref: str, names: list[str], cache: str |
             trees[name] = tree
         clashes = personal_clashes(trees)
         if clashes:
-            raise ss.SyncError("; ".join(clashes) + ". Make the personal copy match, or move it out of the folder")
+            raise ss.SyncError("; ".join(clashes) + ". Claude Code runs a personal copy instead of the project's, "
+                               "and Cursor loads both. Stop and ask the owner to update or remove the personal copy")
         for name, tree in trees.items():
             dest = project / SKILLS / name
             ss.export_tree(src, tree, dest)

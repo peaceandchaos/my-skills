@@ -418,20 +418,22 @@ def hash_tree(entries: Iterable[tuple[str, bytes, str]]) -> str:
     return hashlib.sha1(b"tree %d\0" % len(body) + body).hexdigest()
 
 
-def tree_of_dir(path: Path) -> str | None:
+def tree_of_dir(path: Path, ignore: frozenset[str] = frozenset()) -> str | None:
     """The git tree id of a folder as it is on disk, or None if it holds no files.
 
     Counts every file, executable bit and symlink, so it sees exactly what an
-    agent reading the folder sees.
+    agent reading the folder sees. Names in ignore are skipped at every level.
     """
     entries: list[tuple[str, bytes, str]] = []
     with os.scandir(path) as it:
         for e in it:
+            if e.name in ignore:
+                continue
             name = os.fsencode(e.name)
             if e.is_symlink():
                 entries.append(("120000", name, hash_blob(os.fsencode(os.readlink(e.path)))))
             elif e.is_dir(follow_symlinks=False):
-                sub = tree_of_dir(Path(e.path))
+                sub = tree_of_dir(Path(e.path), ignore)
                 if sub:
                     entries.append(("40000", name, sub))
             elif e.is_file(follow_symlinks=False):

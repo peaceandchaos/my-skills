@@ -11,7 +11,7 @@ my-skills vendors skills from official upstream repos. `sources.json` records ea
 - `scripts/update.py` moves each repo's pin to the tip of its recorded branch and rewrites the vendored folders to match.
 - `scripts/install.py` copies named skills into one project's `.claude/skills/` and records the my-skills commit and each tree ID in `.claude/my-skills.lock.json`.
 
-Install only into a git repo that the owner names. A personal copy in `~/.cursor/skills` or `~/.claude/skills` with the same name must match the pinned skill, because Cursor loads both copies side by side. `install.py` refuses a differing personal copy, and `--check` reports it as a clash. Never install into the home folder or a Glow clone before the Glow switch. Never copy my-skills into `~/.claude/skills` by hand, because Glow pins those copies. `install.py` refuses the home folder, a Glow clone and any folder that is not a git top folder. It writes nothing and exits 2.
+Install only into a git repo that the owner names. A personal copy in `~/.cursor/skills` or `~/.claude/skills` with the same name must match the pinned skill. Claude Code runs the personal copy instead of the project's, and Cursor loads both side by side. `install.py` refuses a differing personal copy, and `--check` reports it as a clash. If either names a personal copy, stop and tell the owner. Never edit, move or delete a personal copy yourself. Never install into the home folder or a Glow clone before the Glow switch. Never copy my-skills into `~/.claude/skills` by hand, because Glow pins those copies. `install.py` refuses the home folder, a Glow clone and any folder that is not a git top folder. It writes nothing and exits 2.
 
 ## Update my-skills
 
@@ -33,9 +33,10 @@ Run from the my-skills clone. `<project>` is the top folder of the git repo that
 
 1. Install. Run `python3 scripts/install.py --project <project> --commit main <names>`. The install fetches pushed my-skills anonymously, and the manifest records the full commit.
    *Done when:* it prints `installed N skill(s) from ... at <commit>`.
-   *Failed when:* it prints `refused:` or `error:`. Either way it wrote nothing. A refusal names its cause. If a skill is still installed, name it again, or delete its folder to drop it. Otherwise the target is the home folder, a Glow clone or not a git top folder, so ask the owner for another project.
+   *Failed when:* it prints `refused:` or `error:`. Either way it wrote nothing. A refusal names its cause. If a skill is still installed, name it again, or delete its folder to drop it. If the target is the home folder, a Glow clone or not a git top folder, ask the owner for another project. If an `error:` names a personal copy, stop and tell the owner.
 2. Check. Run `python3 scripts/install.py --project <project> --check`.
    *Done when:* it prints `check ok: N skills match my-skills <commit>`.
+   *Failed when:* it prints `FAIL` lines. A `FAIL clash` line names a personal copy that differs, so stop and tell the owner.
 3. Commit in the project. Stage `.claude/skills/<name>/` for each name and `.claude/my-skills.lock.json`, then commit under the project's own rules. If `git check-ignore -v .claude/my-skills.lock.json` prints a rule, change an ignored `.claude/` to `.claude/*` and add `!.claude/skills/` and `!.claude/my-skills.lock.json`. A trailing slash on the parent blocks the negation.
    *Done when:* the commit exists, and it is pushed if the project's rules allow. Tell the owner that a new cloud session reads the skills from that pushed commit, and a running session keeps its old checkout.
 
