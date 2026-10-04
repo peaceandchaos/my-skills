@@ -26,6 +26,7 @@ DEFAULT_SOURCE = "https://github.com/peaceandchaos/my-skills"
 SKILLS = Path(".claude") / "skills"
 MANIFEST = Path(".claude") / "my-skills.lock.json"
 GLOW_LOCK = Path("tools") / "skills" / "catalog.lock.json"
+PERSONAL = (Path(".cursor") / "skills", Path(".claude") / "skills")
 
 
 def refusal(project: Path, locked_project: bool) -> str | None:
@@ -57,6 +58,16 @@ def left_out(project: Path, names: list[str]) -> str | None:
     return f"{', '.join(kept)} still installed; name each again, or delete its folder to drop it"
 
 
+def personal_clashes(trees: dict[str, str]) -> list[str]:
+    """Personal copies that share a name with a pinned skill but not its content.
+
+    Cursor loads a project copy and a personal copy of one name side by side."""
+    home = Path.home()
+    return [f"{home / root / name} differs from the pinned {name}"
+            for name, tree in sorted(trees.items()) for root in PERSONAL
+            if (home / root / name).is_dir() and ss.tree_of_dir((home / root / name).resolve()) != tree]
+
+
 def install(project: Path, source: str, ref: str, names: list[str], cache: str | None) -> int:
     with ss.cache_dir(cache) as cache_root:
         src = ss.GitSource(cache_root, "my-skills", source)
@@ -67,6 +78,9 @@ def install(project: Path, source: str, ref: str, names: list[str], cache: str |
             if tree is None:
                 raise ss.SyncError(f"my-skills {commit[:12]} has no skills/{name}")
             trees[name] = tree
+        clashes = personal_clashes(trees)
+        if clashes:
+            raise ss.SyncError("; ".join(clashes) + ". Make the personal copy match, or move it out of the folder")
         for name, tree in trees.items():
             dest = project / SKILLS / name
             ss.export_tree(src, tree, dest)
@@ -104,6 +118,7 @@ def check(project: Path) -> int:
         actual = ss.tree_of_dir(folder)
         if actual != tree:
             fails.append(f"drift {SKILLS / name}: tree {str(actual)[:12]} != manifest {tree[:12]}")
+    fails.extend(f"clash {c}" for c in personal_clashes(skills))
     for f in fails:
         print(f"FAIL {f}")
     if fails:

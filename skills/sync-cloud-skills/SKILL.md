@@ -11,7 +11,7 @@ my-skills vendors skills from official upstream repos. `sources.json` records ea
 - `scripts/update.py` moves each repo's pin to the tip of its recorded branch and rewrites the vendored folders to match.
 - `scripts/install.py` copies named skills into one project's `.claude/skills/` and records the my-skills commit and each tree ID in `.claude/my-skills.lock.json`.
 
-Install only into a git repo that the owner names. Never install into the home folder or a Glow clone before the Glow switch. Never copy my-skills into `~/.claude/skills` by hand, because Glow pins those copies. `install.py` refuses the home folder, a Glow clone and any folder that is not a git top folder. It writes nothing and exits 2.
+Install only into a git repo that the owner names. A personal copy in `~/.cursor/skills` or `~/.claude/skills` with the same name must match the pinned skill, because Cursor loads both copies side by side. `install.py` refuses a differing personal copy, and `--check` reports it as a clash. Never install into the home folder or a Glow clone before the Glow switch. Never copy my-skills into `~/.claude/skills` by hand, because Glow pins those copies. `install.py` refuses the home folder, a Glow clone and any folder that is not a git top folder. It writes nothing and exits 2.
 
 ## Update my-skills
 

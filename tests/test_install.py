@@ -80,6 +80,21 @@ class InstallTest(unittest.TestCase):
         self.assertEqual(self.install(self.project, "beta").returncode, 0)
         self.assertEqual(self.check().returncode, 0)
 
+    def test_personal_copy_must_match_the_pinned_skill(self):
+        self.assertEqual(self.install(self.project, "alpha").returncode, 0)
+        personal = self.env.home / ".cursor/skills/alpha"
+        shutil.copytree(self.project / ".claude/skills/alpha", personal, symlinks=True)
+        self.assertEqual(self.check().returncode, 0)
+        (personal / "references/notes.md").write_text("Notes, edited by hand.\n")
+        result = self.check()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn(f"FAIL clash {personal} differs from the pinned alpha", result.stdout)
+        before = snapshot(self.project)
+        result = self.install(self.project, "alpha")
+        self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+        self.assertIn(f"{personal} differs from the pinned alpha", result.stderr)
+        self.assertEqual(snapshot(self.project), before)
+
     def test_unknown_skill_writes_nothing(self):
         before = snapshot(self.project)
         result = self.install(self.project, "alpha", "gamma")
