@@ -54,7 +54,7 @@ def left_out(project: Path, names: list[str]) -> str | None:
     kept = sorted(n for n in installed if n not in names and (project / SKILLS / n).is_dir())
     if not kept:
         return None
-    return (f"{', '.join(kept)} still installed; name it again, or delete its folder to drop it")
+    return f"{', '.join(kept)} still installed; name each again, or delete its folder to drop it"
 
 
 def install(project: Path, source: str, ref: str, names: list[str], cache: str | None) -> int:
@@ -127,14 +127,14 @@ def main(argv: list[str] | None = None) -> int:
     args = p.parse_args(argv)
     if args.check and args.names:
         p.error("--check takes no skill names")
-    if args.commit and not args.names:
+    if args.commit is not None and not args.names:
         p.error("name at least one skill to install")
     for name in args.names:
         if not ss.NAME_RE.match(name):
             p.error(f"bad skill name {name!r}")
     if len(set(args.names)) != len(args.names):
         p.error("a skill name is repeated")
-    if args.commit and not (ss.HEX40.match(args.commit) or ss.BRANCH_RE.match(args.commit)):
+    if args.commit is not None and not (ss.HEX40.match(args.commit) or ss.BRANCH_RE.match(args.commit)):
         p.error(f"bad --commit {args.commit!r}: give a full commit id or a branch or tag name")
     if not args.source.startswith(("https://", "file://")):
         p.error("--source must be an https:// or file:// URL")

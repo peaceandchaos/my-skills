@@ -33,10 +33,10 @@ Run from the my-skills clone. `<project>` is the top folder of the git repo that
 
 1. Install. Run `python3 scripts/install.py --project <project> --commit main <names>`. The install fetches pushed my-skills anonymously, and the manifest records the full commit.
    *Done when:* it prints `installed N skill(s) from ... at <commit>`.
-   *Failed when:* it prints `refused:` or `error:`. Either way it wrote nothing. A refusal means the target is the home folder, a Glow clone or not a git top folder, so ask the owner for another project.
+   *Failed when:* it prints `refused:` or `error:`. Either way it wrote nothing. A refusal names its cause. If a skill is still installed, name it again, or delete its folder to drop it. Otherwise the target is the home folder, a Glow clone or not a git top folder, so ask the owner for another project.
 2. Check. Run `python3 scripts/install.py --project <project> --check`.
    *Done when:* it prints `check ok: N skills match my-skills <commit>`.
 3. Commit in the project. Stage `.claude/skills/<name>/` for each name and `.claude/my-skills.lock.json`, then commit under the project's own rules. If `git check-ignore -v .claude/my-skills.lock.json` prints a rule, change an ignored `.claude/` to `.claude/*` and add `!.claude/skills/` and `!.claude/my-skills.lock.json`. A trailing slash on the parent blocks the negation.
    *Done when:* the commit exists, and it is pushed if the project's rules allow. Tell the owner that a new cloud session reads the skills from that pushed commit, and a running session keeps its old checkout.
 
-To update a project later, rerun step 1 with the same names. The install replaces the named folders and never deletes one. To drop a skill, delete its folder and rerun step 1 with the names that remain. A rerun that leaves out a skill whose folder still exists is refused and writes nothing.
+To update a project later, rerun step 1 with the same names. The install replaces the named folders and never deletes one. To drop a skill, delete its folder and rerun step 1 with the names that remain. `install.py` refuses a rerun that leaves out a skill whose folder still exists, and writes nothing. If the manifest is unreadable, delete it and rerun with every name to keep.

@@ -70,6 +70,7 @@ class InstallTest(unittest.TestCase):
 
     def test_rerun_that_leaves_out_an_installed_skill_is_refused(self):
         self.assertEqual(self.install(self.project, "alpha").returncode, 0)
+        self.assertEqual(self.install(self.project, "alpha").returncode, 0)
         before = snapshot(self.project)
         result = self.install(self.project, "beta")
         self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
