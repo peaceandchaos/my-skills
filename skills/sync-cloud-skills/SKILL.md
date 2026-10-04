@@ -1,59 +1,42 @@
 ---
 name: sync-cloud-skills
-description: Mirror agent skills into the current repo checkout so Cloud Agents can load them.
+description: Update my-skills from its upstream repos, then install named skills into one project as pinned real copies.
 disable-model-invocation: true
 ---
 
 # Sync Cloud Skills
 
-**Mirror** skills into this repo's `.cursor/skills/` **checkout**, then commit/push for **handoff** to phone/web/other PCs. Cloud Agents only see skills committed in the clone — not `~/.cursor/skills` on a laptop.
+my-skills vendors skills from official upstream repos. `sources.json` records each skill's repo, path, pinned commit and license. Two scripts in a my-skills clone do the work:
 
-If this skill is missing from the checkout, follow [`BOOTSTRAP.md`](BOOTSTRAP.md) first.
+- `scripts/update.py` moves each repo's pin to the tip of its recorded branch and rewrites the vendored folders to match.
+- `scripts/install.py` copies named skills into one project's `.claude/skills/` and records the my-skills commit and each tree ID in `.claude/my-skills.lock.json`.
 
-## Steps
+Install only into a git repo that the owner names. Never install into the home folder or a Glow clone before the Glow switch. Never copy my-skills into `~/.claude/skills` by hand, because Glow pins those copies. `install.py` refuses all three targets, writes nothing and exits 2.
 
-1. **Repo root** — `git rev-parse --show-toplevel`. If that fails and the user wants a new project here: `git init`, then re-check.  
-   *Done when:* you have the repo path.
+## Update my-skills
 
-2. **Confirm push / handoff** — Ask whether to commit and push after the mirror. If there is no `origin` and they want handoff: ask to `gh repo create` or add a remote.  
-   *Done when:* push is accepted or declined; if handoff was requested with no remote, a create-or-add strategy is chosen.
+Run every command from the root of a my-skills clone on an up-to-date `main` with an empty `git status --porcelain`.
 
-3. **Mirror** — From the repo root, run:
+1. Preview. Run `python3 scripts/update.py --dry-run`.
+   *Done when:* every repo has a status line and `git status --porcelain` is still empty. Report each `warning:` line to the owner, S3 and S5 first, because they can add code that runs. S1 is a skill name added, removed or renamed. S2 is a file mode other than 100644. S3 is a file that is not Markdown. S4 is a frontmatter key outside name, description, license, metadata, version and argument-hint. S5 is an inline-shell line.
+2. Update. Run `python3 scripts/update.py`.
+   *Done when:* it exits 0 and prints either a commit message or `no pin moves`.
+   *Failed when:* it exits 1. Each `error:` line names a repo whose pin stayed. The other repos' changes are on disk. If a path is gone upstream, the owner edits that entry in `sources.json` (a new `path`, or the entry and its folder removed), and you rerun this step.
+3. Check. Run `python3 scripts/update.py --check`.
+   *Done when:* it prints `check ok`. Commit only after `check ok`. Each `FAIL` line names a folder that differs from its pinned upstream tree.
+4. Hand over. Show the owner `git diff --stat`, the warnings and the printed commit message.
+   *Done when:* the owner has committed with that message and pushed `main`, or has declined.
 
-   ```bash
-   python3 "$(git rev-parse --show-toplevel)/.cursor/skills/sync-cloud-skills/scripts/sync.py"
-   ```
+## Install into a project
 
-   Defaults: `--source auto`, **upsert**. Auto uses a **complete** local pack (`~/.agents/skills` on a Mac, ≥15 skills). It does **not** treat the Cloud user store (`react-doctor` + `sync-cloud-skills`) as the pack — that path fetches `peaceandchaos/my-skills` instead (needs `GH_TOKEN` / `gh` on Cloud). Pass `--replace` only if the user asks for a full wipe. See `scripts/sync.py --help` for `--source` / `--remote`.  
-   *Done when:* stdout has `source=`, `mode=`, `copied=` **≥ 15**; `expo-overview` and `expo-router` exist under `<repo>/.cursor/skills/`; every `+ name` line has `<repo>/.cursor/skills/<name>/SKILL.md`.  
-   *Failed when:* the script exits 2, `copied=` is under 15, or only the two store leftovers landed. **Do not commit.** Tell the user to set `GH_TOKEN` (repo scope on `peaceandchaos/my-skills`) or run `/sync-cloud-skills` from a Mac.
+Run from the my-skills clone. `<project>` is the top folder of the git repo that the owner named. `<names>` are the skills it needs, as folder names under `skills/`.
 
-4. **Gitignore** — Ensure `.cursor/skills/` is tracked. If `.gitignore` ignores `.cursor/`, use:
+1. Install. Run `python3 scripts/install.py --project <project> --commit main <names>`. The install fetches pushed my-skills anonymously, and the manifest records the full commit.
+   *Done when:* it prints `installed N skill(s) from ... at <commit>`.
+   *Failed when:* it prints `refused:` or `error:`. Either way it wrote nothing. A refusal means the target is the home folder, a Glow clone or not a git top folder, so ask the owner for another project.
+2. Check. Run `python3 scripts/install.py --project <project> --check`.
+   *Done when:* it prints `check ok: N skills match my-skills <commit>`.
+3. Commit in the project. Stage `.claude/skills/<name>/` for each name and `.claude/my-skills.lock.json`, then commit under the project's own rules. If `git check-ignore -v .claude/my-skills.lock.json` prints a rule, change an ignored `.claude/` to `.claude/*` and add `!.claude/skills/` and `!.claude/my-skills.lock.json`. A trailing slash on the parent blocks the negation.
+   *Done when:* the commit exists, and it is pushed if the project's rules allow. Tell the owner that a new cloud session reads the skills from that pushed commit, and a running session keeps its old checkout.
 
-   ```gitignore
-   .cursor/*
-   !.cursor/skills/
-   !.cursor/skills/**
-   ```
-
-   (Use `.cursor/*`, not `.cursor/` — a trailing slash on the parent blocks negation.)  
-   *Done when:* `git check-ignore -v .cursor/skills/sync-cloud-skills/SKILL.md` reports nothing, and `git add -n .cursor/skills/sync-cloud-skills/SKILL.md` would stage the file.
-
-5. **Show the diff** — Run `git status --short -- .cursor/skills` and `git diff --stat -- .cursor/skills`; report the skill change count to the user.  
-   *Done when:* those commands have been run and the change count is stated in the reply.
-
-6. **Commit / remote / push** (only if step 2 accepted) — Stage `.cursor/skills` and any gitignore fix. Commit. If no upstream: create or set remote per step 2, then push.  
-   *Done when:* `git push` succeeds, or the user cancelled.
-
-7. **Handoff** — Tell the user to start a **new** Cloud Agent on this repo/branch so it clones the commit with skills. Existing cloud runs keep the old checkout. Slash commands (`/expo-router`, `/expo-dev-client`, …) appear from `.cursor/skills` in that new clone — not from the laptop.  
-   *Done when:* that instruction appears in the reply.
-
-## Multi-repo
-
-One checkout per run. Open another workspace and run again.
-
-## Do not
-
-- Hardcode **target application** repo names, orgs, or absolute machine paths
-- Rely on `~/.cursor/plugins/local` for Cloud Agents
-- Mirror the Cloud user-store stub and call that a successful sync
+To update a project later, rerun step 1 with the same names. The install replaces the named folders and never deletes one. To drop a skill, delete its folder and rerun step 1 with the names that remain.

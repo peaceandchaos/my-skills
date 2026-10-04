@@ -1,25 +1,9 @@
 # my-skills
 
-Canonical personal skills live in `skills/<name>/SKILL.md`.
+Skills live in `skills/<name>/SKILL.md`. `sources.json` says where each one comes from.
 
-Cursor does not auto-load that folder. To use them in this checkout:
+- Edit a skill by hand only when its `sources.json` entry has `"kind": "own"`. Every other folder must equal its pinned upstream folder, so change it with `python3 scripts/update.py` instead.
+- Before a commit, run `python3 scripts/update.py --check` and `python3 -m unittest`. Both must pass.
+- Copy skills into another project with `python3 scripts/install.py --project <project> --commit main <names>`. Leave `~/.claude/skills` and Glow clones alone, because Glow pins those copies.
 
-```bash
-npx skills add . --skill '*' -a cursor -y
-```
-
-That installs into `.agents/skills/`, which Cursor and Cloud Agents do load.
-
-On another repo or Cloud VM:
-
-```bash
-npx skills add peaceandchaos/my-skills --skill '*' -a cursor -y
-```
-
-Private clone: set `GH_TOKEN` with `repo` scope.
-
-Refresh the pack from the Mac that owns the live skill dirs:
-
-```bash
-./sync-from-local.sh
-```
+The `sync-cloud-skills` skill has the full update and install steps.
