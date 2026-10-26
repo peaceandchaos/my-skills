@@ -80,7 +80,7 @@ tests/                   # fixture tests: python3 -m unittest
 
 Optional `scripts/`, `references/`, and `assets/` live next to each `SKILL.md`.
 
-## What’s in here (77)
+## What’s in here (88)
 
 `sources.json` names the upstream repo and license of each vendored skill below.
 
@@ -90,9 +90,9 @@ Optional `scripts/`, `references/`, and `assets/` live next to each `SKILL.md`.
 
 **Writing** — `writing-beats`, `writing-for-agents`, `writing-fragments`, `writing-shape`
 
-**Mobile / Expo** — `app-ux-workflow-capture`, `expo-ios-hig`, `expo-overview`, `expo-web-to-native`, `expo-dom`, `expo-animation`, `expo-data-fetching`, `expo-design-system`, `expo-examples`, `expo-module`, `expo-app-clip`, `expo-brownfield`, `expo-skill-feedback`, `expo-ui`, `expo-project-structure`, `expo-router`, `expo-native-ui`, `expo-dev-client`, `expo-upgrade`, `eas-simulator`, `eas-app-stores`, `eas-hosting`, `eas-observe`, `eas-update`, `eas-update-insights`, `eas-workflows`, `mobile-touch`, `react-native-design`, `react-native-best-practices` (Callstack: FPS, TTI, bundle, memory), `react-native-best-practices-sm` (Software Mansion: Reanimated, Gesture Handler, Skia, worklets)
+**Mobile / Expo** — `app-ux-workflow-capture`, `expo-ios-hig`, `expo-overview`, `expo-web-to-native`, `expo-dom`, `expo-animation`, `expo-data-fetching`, `expo-design-system`, `expo-examples`, `expo-module`, `expo-app-clip`, `expo-brownfield`, `expo-ui`, `expo-project-structure`, `expo-router`, `expo-native-ui`, `expo-dev-client`, `expo-upgrade`, `eas-simulator`, `eas-app-stores`, `eas-hosting`, `eas-observe`, `eas-update`, `eas-update-insights`, `eas-workflows`, `mobile-touch`, `react-native-design`, `react-native-best-practices` (Callstack: FPS, TTI, bundle, memory), `react-native-best-practices-sm` (Software Mansion: Reanimated, Gesture Handler, Skia, worklets)
 
-**Motion / UI** — `emil-prototype`, `find-animation-opportunities`, `review-animations`, `userinterface-wiki`
+**Motion / UI** — Emil Kowalski's official set: `emil-design-eng`, `animate`, `animate-expo`, `review-animations`, `improve-animations`, `find-animation-opportunities`, `animation-performance`, `animation-vocabulary`, `apple-design`, `mobile-native`, `break-ui`, `pick-ui-library`, `ask-sonner`, `write-swift`, and `emil-prototype` (his `prototype`, renamed to sit beside Matt's). Also `userinterface-wiki`.
 
 **Other** — `figma-review-skill`, `git-guardrails-claude-code`, `hatch-pet`, `scaffold-exercises`
 

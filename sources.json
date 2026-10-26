@@ -3,13 +3,13 @@
     "callstackincubator/agent-skills": {
       "url": "https://github.com/callstackincubator/agent-skills",
       "branch": "main",
-      "pin": "2766baa46ca0fe7c16cc5ab4d0077ccec2e95fb9",
+      "pin": "59e9d17446a248b21d86f078fcd0bd2d36db1ca4",
       "license": "MIT (LICENSE at the repo root)"
     },
     "cursor/plugins": {
       "url": "https://github.com/cursor/plugins",
       "branch": "main",
-      "pin": "a58628271271837ef5f386adca29c0812683a19a",
+      "pin": "99b609a72323b70204eab407c622f436e858e112",
       "license": "MIT (cursor-team-kit/LICENSE)"
     },
     "dylantarre/animation-principles": {
@@ -21,25 +21,25 @@
     "emilkowalski/skills": {
       "url": "https://github.com/emilkowalski/skills",
       "branch": "main",
-      "pin": "78761e1b57f97dce65b983d640c70a68f39e8163",
+      "pin": "2d228630ba1446365f614a108cb8252f1feda202",
       "license": "MIT (LICENSE at the repo root)"
     },
     "expo/skills": {
       "url": "https://github.com/expo/skills",
       "branch": "main",
-      "pin": "39708666ce7014def1f8e34f3d8c93e8d3f588bb",
+      "pin": "d5caf7fdf8b4854351f05841a7e315ac87ad7d24",
       "license": "MIT (LICENSE at the repo root)"
     },
     "mattpocock/skills": {
       "url": "https://github.com/mattpocock/skills",
       "branch": "main",
-      "pin": "8b78b531ab965735c5dc74f6f7a219e1e37326df",
+      "pin": "5beb35b040e3de97e54fa9e386d7e42d15c295c2",
       "license": "MIT (LICENSE at the repo root)"
     },
     "millionco/react-doctor": {
       "url": "https://github.com/millionco/react-doctor",
       "branch": "main",
-      "pin": "69eead3c439f20dca9613b1696cc839835b1db1a",
+      "pin": "84ad0c8d0df7a3ab7d26946367fae3bc39c100d0",
       "license": "MIT (LICENSE at the repo root)"
     },
     "openai/skills": {
@@ -63,13 +63,13 @@
     "software-mansion-labs/skills": {
       "url": "https://github.com/software-mansion-labs/skills",
       "branch": "main",
-      "pin": "c4ac0abdbddb9c6513b6071eb342d440bcc4bfe0",
+      "pin": "58afa0a09b01dc47819af8fd48bb062561414108",
       "license": "MIT (SKILL.md frontmatter; no LICENSE file)"
     },
     "supabase/agent-skills": {
       "url": "https://github.com/supabase/agent-skills",
       "branch": "main",
-      "pin": "1712854a5128a32c418bc572a4cfda04dc5aa0d5",
+      "pin": "c9be0e931b7930f7d02126d04774d904c381e7d7",
       "license": "MIT (SKILL.md frontmatter; no LICENSE file)"
     },
     "vercel-labs/agent-skills": {
@@ -81,23 +81,58 @@
     "vercel-labs/skills": {
       "url": "https://github.com/vercel-labs/skills",
       "branch": "main",
-      "pin": "9e064a6cb4ba8c61918c53569cec96c3ca67efce",
+      "pin": "a80e4c9d12d607631249d4d7d059f835d4b2f13a",
       "license": "MIT (package.json at the pin; LICENSE at later commits)"
     },
     "wshobson/agents": {
       "url": "https://github.com/wshobson/agents",
       "branch": "main",
-      "pin": "156b7a5e7a8b93642628a339ee4039c925b34c7f",
+      "pin": "0874a27b17a22e2b7c2e2bcd725768e0803cad06",
       "license": "MIT (LICENSE at the repo root)"
     }
   },
   "skills": {
+    "animate": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/animate",
+      "kind": "upstream"
+    },
+    "animate-expo": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/animate-expo",
+      "kind": "upstream"
+    },
+    "animation-performance": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/animation-performance",
+      "kind": "upstream"
+    },
+    "animation-vocabulary": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/animation-vocabulary",
+      "kind": "upstream"
+    },
     "app-ux-workflow-capture": {
       "kind": "own"
+    },
+    "apple-design": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/apple-design",
+      "kind": "upstream"
     },
     "ask-matt": {
       "repo": "mattpocock/skills",
       "path": "skills/engineering/ask-matt",
+      "kind": "upstream"
+    },
+    "ask-sonner": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/ask-sonner",
+      "kind": "upstream"
+    },
+    "break-ui": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/break-ui",
       "kind": "upstream"
     },
     "claude-handoff": {
@@ -158,6 +193,11 @@
     "eas-workflows": {
       "repo": "expo/skills",
       "path": "plugins/expo/skills/eas-workflows",
+      "kind": "upstream"
+    },
+    "emil-design-eng": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/emil-design-eng",
       "kind": "upstream"
     },
     "emil-prototype": {
@@ -237,11 +277,6 @@
       "path": "plugins/expo/skills/expo-router",
       "kind": "upstream"
     },
-    "expo-skill-feedback": {
-      "repo": "expo/skills",
-      "path": "plugins/expo/skills/expo-skill-feedback",
-      "kind": "upstream"
-    },
     "expo-ui": {
       "repo": "expo/skills",
       "path": "plugins/expo/skills/expo-ui",
@@ -305,6 +340,11 @@
       "path": "skills/engineering/implement",
       "kind": "upstream"
     },
+    "improve-animations": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/improve-animations",
+      "kind": "upstream"
+    },
     "improve-codebase-architecture": {
       "repo": "mattpocock/skills",
       "path": "skills/engineering/improve-codebase-architecture",
@@ -320,6 +360,11 @@
       "path": "skills/misc/migrate-to-shoehorn",
       "kind": "upstream"
     },
+    "mobile-native": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/mobile-native",
+      "kind": "upstream"
+    },
     "mobile-touch": {
       "repo": "dylantarre/animation-principles",
       "path": "skills/01-by-domain/mobile-touch",
@@ -327,6 +372,11 @@
     },
     "orchestrate": {
       "kind": "own"
+    },
+    "pick-ui-library": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/pick-ui-library",
+      "kind": "upstream"
     },
     "prototype": {
       "repo": "mattpocock/skills",
@@ -387,7 +437,7 @@
     },
     "supabase-postgres-best-practices": {
       "repo": "supabase/agent-skills",
-      "path": "skills/postgres-best-practices",
+      "path": "skills/supabase-postgres-best-practices",
       "kind": "upstream"
     },
     "sync-cloud-skills": {
@@ -452,6 +502,11 @@
     "wizard": {
       "repo": "mattpocock/skills",
       "path": "skills/engineering/wizard",
+      "kind": "upstream"
+    },
+    "write-swift": {
+      "repo": "emilkowalski/skills",
+      "path": "skills/write-swift",
       "kind": "upstream"
     },
     "writing-beats": {
